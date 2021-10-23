@@ -1,0 +1,21 @@
+wykrywanie białego w lewym górnym rogu (playing)
+lub
+dolna opcja dialogowa - biały dymek (...)
+ale
+np. okolice środka ekranu nie są białe (nie jest to loading)
+->
+ale
+np. okolice środka ekranu nie są białe (nie jest to loading)
+podstawienie tego warunku zamiast True w pętli while w main
+
+Playing:
+    954 335
+    ECE5D8
+
+Dialogue (...):
+    1587 925
+    FFFFFF
+
+loading:
+    1450 790
+    FFFFFF
