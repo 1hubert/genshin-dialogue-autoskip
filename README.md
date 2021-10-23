@@ -1,0 +1,1 @@
+# genshin_dialogue-autoskip
