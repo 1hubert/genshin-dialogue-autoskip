@@ -67,7 +67,7 @@ def exit_program():
 def main():
     main.status = 'pause'
     last_reposition = 0
-    time_between_reposition = random_interval()*10
+    time_between_reposition = random_interval()*80
 
     print('-------------')
     print("F8 to start")
@@ -87,7 +87,7 @@ def main():
         if temp:
             if time.time() - last_reposition > time_between_reposition:
                 last_reposition = time.time()
-                time_between_reposition = random_interval()*10
+                time_between_reposition = random_interval()*80
                 mouse.position = random_cursor_position()
             time.sleep(random_interval())
             pyautogui.click()
