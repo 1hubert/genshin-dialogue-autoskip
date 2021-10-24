@@ -11,7 +11,7 @@ PLAYING_ICON_COLOR = (236, 229, 216)
 
 
 if RESOLUTION == (1024, 768):
-    # bottom dialogue option for 1024*768 windowed
+    # bottom dialogue option dimensions for 1024*768 windowed
     MIN_X = 1584
     MAX_X = 1766
     MIN_Y = 920
@@ -67,7 +67,7 @@ def exit_program():
 def main():
     main.status = 'pause'
     last_reposition = 0
-    time_between_reposition = random_interval()*80
+    time_between_repositions = random_interval()*80
 
     print('-------------')
     print("F8 to start")
@@ -85,9 +85,9 @@ def main():
         
         temp=getpixel(PLAYING_ICON_X, PLAYING_ICON_Y)==PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y)==(255,255,255) and getpixel(LOADING_SCREEN[0],LOADING_SCREEN[1])!=(255,255,255)
         if temp:
-            if time.time() - last_reposition > time_between_reposition:
+            if time.time() - last_reposition > time_between_repositions:
                 last_reposition = time.time()
-                time_between_reposition = random_interval()*80
+                time_between_repositions = random_interval()*80
                 mouse.position = random_cursor_position()
             time.sleep(random_interval())
             pyautogui.click()
