@@ -24,12 +24,12 @@ if RESOLUTION == (1024, 768):
     DIALOGUE_ICON_Y = 925
     
 
-dc= windll.user32.GetDC(0)
+dc = windll.user32.GetDC(0)
 mouse = Controller()
 
 
 def getpixel(x,y):
-    return tuple(int.to_bytes(windll.gdi32.GetPixel(dc,x,y), 3, "little"))
+    return tuple(int.to_bytes(windll.gdi32.GetPixel(dc,x,y), 3, 'little'))
 
 
 def random_interval():
@@ -42,7 +42,7 @@ def random_cursor_position():
     x = random.randrange(MIN_X, MAX_X+1)
     y = random.randrange(MIN_Y, MAX_Y+1)
     position = (x, y)
-    print("Cursor moved to: ", position)
+    print('Cursor moved to: ', position)
     return position
 
 
@@ -50,11 +50,11 @@ def exit_program():
     def on_press(key):
         if str(key) == 'Key.f8':
             main.status = 'run'
-            print("RUNNING")
+            print('RUNNING')
 
         elif str(key) == 'Key.f9':
             main.status = 'pause'
-            print("PAUSED")
+            print('PAUSED')
 
         elif str(key) == 'Key.f12':
             main.status = 'exit'
@@ -70,9 +70,9 @@ def main():
     time_between_repositions = random_interval()*80
 
     print('-------------')
-    print("F8 to start")
-    print("F9 to stop")
-    print("F12 to quit")
+    print('F8 to start')
+    print('F9 to stop')
+    print('F12 to quit')
     print('-------------')
 
     while True:
