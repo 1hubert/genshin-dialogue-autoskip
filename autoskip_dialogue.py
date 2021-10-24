@@ -3,6 +3,7 @@ from pynput import keyboard
 from threading import Thread
 import time, random, pyautogui
 
+# bottom dialogue option for 1024*768 windowed
 min_x = 1584
 max_x = 1766
 min_y = 914
