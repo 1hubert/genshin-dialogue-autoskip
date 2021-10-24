@@ -84,7 +84,7 @@ def main():
         
         temp=getpixel(PLAYING_ICON_X, PLAYING_ICON_Y)==PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y)==(255,255,255) and getpixel(LOADING_SCREEN[0],LOADING_SCREEN[1])!=(255,255,255)
         if temp:
-            if time.time() - last_reposition > 10:
+            if time.time() - last_reposition > random_interval()*8:
                 last_reposition = time.time()
                 mouse.position = random_cursor_position()
             time.sleep(random_interval())
