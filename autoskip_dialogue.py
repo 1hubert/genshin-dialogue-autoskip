@@ -7,9 +7,7 @@ from ctypes import windll
 
 RESOLUTION = (1024, 768)
 LOADING_SCREEN = (1450, 790)
-LOADING_SCREEN_COLOR = (255, 255, 255)
 PLAYING_ICON_COLOR = (236, 229, 216)
-DIALOGUE_ICON_COLOR = (255, 255, 255)
 
 
 if RESOLUTION == (1024, 768):
@@ -83,7 +81,7 @@ def main():
             break
         
         #temp=getpixel(PLAYING_ICON_X, PLAYING_ICON_Y)==PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y)==DIALOGUE_ICON_COLOR and (getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1])!=LOADING_SCREEN_COLOR)
-        temp=getpixel(PLAYING_ICON_X, PLAYING_ICON_Y)==PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y)==DIALOGUE_ICON_COLOR
+        temp=getpixel(PLAYING_ICON_X, PLAYING_ICON_Y)==PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y)==(255,255,255) and getpixel(LOADING_SCREEN[0],LOADING_SCREEN[1])!=(255,255,255)
         print(temp)
         if temp:
             print('running')
