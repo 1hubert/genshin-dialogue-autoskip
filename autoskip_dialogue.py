@@ -1,4 +1,3 @@
-from PIL.Image import MAX_IMAGE_PIXELS
 from pynput.mouse import Controller
 from pynput import keyboard
 from threading import Thread
