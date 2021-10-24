@@ -63,6 +63,11 @@ def exit_program():
     with keyboard.Listener(on_press=on_press) as listener:
         listener.join()
 
+def change_cursor_position():
+    while True:
+        if temp:
+            mouse.position = random_cursor_position()
+            time.sleep(10)
 
 def main():
     main.status = 'pause'
@@ -80,7 +85,7 @@ def main():
             print('Main program closing')
             break
         
-        #temp=getpixel(PLAYING_ICON_X, PLAYING_ICON_Y)==PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y)==DIALOGUE_ICON_COLOR and (getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1])!=LOADING_SCREEN_COLOR)
+        global temp
         temp=getpixel(PLAYING_ICON_X, PLAYING_ICON_Y)==PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y)==(255,255,255) and getpixel(LOADING_SCREEN[0],LOADING_SCREEN[1])!=(255,255,255)
         print(temp)
         if temp:
