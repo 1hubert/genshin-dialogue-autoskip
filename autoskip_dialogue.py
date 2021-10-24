@@ -21,8 +21,8 @@ def random_interval():
     return random.uniform(0.12, 0.18)
 
 def random_cursor_position():
-    x = random.randrange(min_x, max_x+1)
-    y = random.randrange(min_y, max_y+1)
+    x = random.randrange(MIN_X, MAX_X+1)
+    y = random.randrange(MIN_Y, MAX_Y+1)
     position = (x, y)
     print("Cursor moved to: ", position)
     return position
