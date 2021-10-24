@@ -49,12 +49,12 @@ def random_cursor_position():
 def exit_program():
     def on_press(key):
         if str(key) == 'Key.f8':
-            mouse.position = random_cursor_position()
             main.status = 'run'
+            print("RUNNING")
 
         elif str(key) == 'Key.f9':
-            print("PAUSED")
             main.status = 'pause'
+            print("PAUSED")
 
         elif str(key) == 'Key.f12':
             main.status = 'exit'
@@ -63,14 +63,11 @@ def exit_program():
     with keyboard.Listener(on_press=on_press) as listener:
         listener.join()
 
-def change_cursor_position():
-    while True:
-        if temp:
-            mouse.position = random_cursor_position()
-            time.sleep(10)
 
 def main():
     main.status = 'pause'
+    last_reposition = 0
+
     print('-------------')
     print("F8 to start")
     print("F9 to stop")
@@ -85,13 +82,14 @@ def main():
             print('Main program closing')
             break
         
-        global temp
         temp=getpixel(PLAYING_ICON_X, PLAYING_ICON_Y)==PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y)==(255,255,255) and getpixel(LOADING_SCREEN[0],LOADING_SCREEN[1])!=(255,255,255)
-        print(temp)
         if temp:
-            print('running')
+            if time.time() - last_reposition > 10:
+                last_reposition = time.time()
+                mouse.position = random_cursor_position()
             time.sleep(random_interval())
             pyautogui.click()
+            print("*click*")
         
     
 Thread(target=main).start()
