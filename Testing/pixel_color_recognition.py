@@ -5,4 +5,5 @@ def getpixel(x,y):
     return tuple(int.to_bytes(windll.gdi32.GetPixel(dc,x,y), 3, "little"))
 
 
-print(getpixel(100, 200))
+print(getpixel(951,280))
+print(getpixel(954, 335))

@@ -6,6 +6,10 @@ from ctypes import windll
 
 
 RESOLUTION = (1024, 768)
+LOADING_SCREEN = (1450, 790)
+LOADING_SCREEN_COLOR = (255, 255, 255)
+PLAYING_ICON_COLOR = (236, 229, 216)
+DIALOGUE_ICON_COLOR = (255, 255, 255)
 
 
 if RESOLUTION == (1024, 768):
@@ -15,6 +19,12 @@ if RESOLUTION == (1024, 768):
     MIN_Y = 914
     MAX_Y = 942
 
+    PLAYING_ICON_X = 954
+    PLAYING_ICON_Y = 337
+    
+    DIALOGUE_ICON_X = 1587
+    DIALOGUE_ICON_Y = 925
+    
 
 dc= windll.user32.GetDC(0)
 mouse = Controller()
@@ -72,9 +82,13 @@ def main():
             print('Main program closing')
             break
         
-        print('running')
-        time.sleep(random_interval())
-        pyautogui.click()
+        #temp=getpixel(PLAYING_ICON_X, PLAYING_ICON_Y)==PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y)==DIALOGUE_ICON_COLOR and (getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1])!=LOADING_SCREEN_COLOR)
+        temp=getpixel(PLAYING_ICON_X, PLAYING_ICON_Y)==PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y)==DIALOGUE_ICON_COLOR
+        print(temp)
+        if temp:
+            print('running')
+            time.sleep(random_interval())
+            pyautogui.click()
         
     
 Thread(target=main).start()
