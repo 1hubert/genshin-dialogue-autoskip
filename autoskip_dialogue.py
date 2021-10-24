@@ -14,7 +14,7 @@ if RESOLUTION == (1024, 768):
     # bottom dialogue option for 1024*768 windowed
     MIN_X = 1584
     MAX_X = 1766
-    MIN_Y = 914
+    MIN_Y = 920
     MAX_Y = 942
 
     PLAYING_ICON_X = 954
