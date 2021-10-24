@@ -2,8 +2,11 @@ from pynput.mouse import Controller
 from pynput import keyboard
 from threading import Thread
 import time, random, pyautogui
+from ctypes import windll
+
 
 RESOLUTION = (1024, 768)
+
 
 if RESOLUTION == (1024, 768):
     # bottom dialogue option for 1024*768 windowed
@@ -13,12 +16,19 @@ if RESOLUTION == (1024, 768):
     MAX_Y = 942
 
 
+dc= windll.user32.GetDC(0)
 mouse = Controller()
+
+
+def getpixel(x,y):
+    return tuple(int.to_bytes(windll.gdi32.GetPixel(dc,x,y), 3, "little"))
+
 
 def random_interval():
     if random.randrange(1,7) == 6:
         return random.uniform(0.18, 0.3)
     return random.uniform(0.12, 0.18)
+
 
 def random_cursor_position():
     x = random.randrange(MIN_X, MAX_X+1)
@@ -44,6 +54,7 @@ def exit_program():
     
     with keyboard.Listener(on_press=on_press) as listener:
         listener.join()
+
 
 def main():
     main.status = 'pause'
