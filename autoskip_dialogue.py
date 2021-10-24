@@ -3,11 +3,14 @@ from pynput import keyboard
 from threading import Thread
 import time, random, pyautogui
 
-# bottom dialogue option for 1024*768 windowed
-min_x = 1584
-max_x = 1766
-min_y = 914
-max_y = 942
+RESOLUTION = (1024, 768)
+
+if RESOLUTION == (1024, 768):
+    # bottom dialogue option for 1024*768 windowed
+    MIN_X = 1584
+    MAX_X = 1766
+    MIN_Y = 914
+    MAX_Y = 942
 
 
 mouse = Controller()
