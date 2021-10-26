@@ -11,9 +11,10 @@ RESOLUTION = (1024, 768)
 LOADING_SCREEN = (1450, 790)
 PLAYING_ICON_COLOR = (236, 229, 216)
 
+mouse = Controller()
 
 if RESOLUTION == (1024, 768):
-    # bottom dialogue option dimensions for 1024*768 windowed
+    # Bottom dialogue option dimensions for 1024*768 windowed
     MIN_X = 1584
     MAX_X = 1766
     MIN_Y = 920
@@ -25,11 +26,9 @@ if RESOLUTION == (1024, 768):
     DIALOGUE_ICON_X = 1587
     DIALOGUE_ICON_Y = 925
 
-dc = windll.user32.GetDC(0)
-mouse = Controller()
-
 
 def getpixel(x, y):
+    dc = windll.user32.GetDC(0)
     return tuple(int.to_bytes(windll.gdi32.GetPixel(dc, x, y), 3, 'little'))
 
 
@@ -93,6 +92,7 @@ def main():
                 last_reposition = time.time()
                 time_between_repositions = random_interval()*80
                 mouse.position = random_cursor_position()
+
             time.sleep(random_interval())
             pyautogui.click()
             print('*click*')
