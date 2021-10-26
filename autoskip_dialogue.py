@@ -84,7 +84,10 @@ def main():
             print('Main program closing')
             break
 
-        temp = getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255) and getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) != (255, 255, 255)
+        temp = {getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == PLAYING_ICON_COLOR
+                or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255)
+                and getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) != (255, 255, 255)}
+
         if temp:
             if time.time() - last_reposition > time_between_repositions:
                 last_reposition = time.time()
@@ -92,7 +95,7 @@ def main():
                 mouse.position = random_cursor_position()
             time.sleep(random_interval())
             pyautogui.click()
-            print("*click*")
+            print('*click*')
 
 
 Thread(target=main).start()
