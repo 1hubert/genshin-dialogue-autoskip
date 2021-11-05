@@ -13,16 +13,20 @@ PLAYING_ICON_COLOR = (236, 229, 216)
 
 mouse = Controller()
 
+#if RESOLUTION == (1920, 1080):
+
 if RESOLUTION == (1024, 768):
-    # Bottom dialogue option dimensions for 1024*768 windowed
+    # Bottom dialogue option dimensions
     MIN_X = 1584
     MAX_X = 1766
     MIN_Y = 920
     MAX_Y = 942
 
+    # Pixel coordinates for white part of the auto play button
     PLAYING_ICON_X = 954
     PLAYING_ICON_Y = 337
 
+    # Pixel coordinates for white part of the speech bubble in bottom dialogue option
     DIALOGUE_ICON_X = 1587
     DIALOGUE_ICON_Y = 925
 
