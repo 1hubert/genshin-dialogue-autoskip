@@ -9,5 +9,5 @@ Usage:
 - press F12 to quit
 
 The script requires the following:
-- The game running on Main Display 1
+- The game running on Main Display 1 in either 1920/1080 or 1024/768
 - Run in Admin mode to allow key and mouse emulation

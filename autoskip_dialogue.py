@@ -7,15 +7,30 @@ from pynput import keyboard
 from threading import Thread
 from ctypes import windll
 
-RESOLUTION = (1024, 768)
-LOADING_SCREEN = (1450, 790)
+RESOLUTION = (1920, 1080)  # Supported: (1920, 1080) and (1024, 768)
 PLAYING_ICON_COLOR = (236, 229, 216)
 
 mouse = Controller()
 
-#if RESOLUTION == (1920, 1080):
+if RESOLUTION == (1920, 1080):
+    # Bottom dialogue option dimensions
+    MIN_X = 1282
+    MAX_X = 1775
+    MIN_Y = 774
+    MAX_Y = 825
 
-if RESOLUTION == (1024, 768):
+    # Pixel coordinates for white part of the auto play button
+    PLAYING_ICON_X = 111
+    PLAYING_ICON_Y = 46
+
+    # Pixel coordinates for white part of the speech bubble in bottom dialogue option
+    DIALOGUE_ICON_X = 1297
+    DIALOGUE_ICON_Y = 791
+
+    # Pixel coordinates near middle of the screen known to be white while the game is loading
+    LOADING_SCREEN = (1200, 700)
+
+elif RESOLUTION == (1024, 768):  # Full HD windowed mode, window positioned in the bottom right corner
     # Bottom dialogue option dimensions
     MIN_X = 1584
     MAX_X = 1766
@@ -29,6 +44,9 @@ if RESOLUTION == (1024, 768):
     # Pixel coordinates for white part of the speech bubble in bottom dialogue option
     DIALOGUE_ICON_X = 1587
     DIALOGUE_ICON_Y = 925
+
+    # Pixel coordinates near middle of the screen known to be white while the game is loading
+    LOADING_SCREEN = (1450, 790)
 
 
 def getpixel(x, y):
@@ -91,7 +109,9 @@ def main():
                 or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255)
                 and getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) != (255, 255, 255)}
 
-        if temp:
+        if {getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == PLAYING_ICON_COLOR
+                or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255)
+                and getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) != (255, 255, 255)}:
             if time.time() - last_reposition > time_between_repositions:
                 last_reposition = time.time()
                 time_between_repositions = random_interval()*80
@@ -100,6 +120,13 @@ def main():
             time.sleep(random_interval())
             pyautogui.click()
             print('*click*')
+
+            if getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == PLAYING_ICON_COLOR:
+                print("PLAYING ICON TRIGGERED")
+            if getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255):
+                print("DIALOGUE ICON TRIGGERED")
+            if getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) == (255, 255, 255):
+                print("LOADING SCREEN TRIGGERED")
 
 
 Thread(target=main).start()
