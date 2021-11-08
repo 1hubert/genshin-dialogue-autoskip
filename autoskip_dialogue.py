@@ -105,13 +105,9 @@ def main():
             print('Main program closing')
             break
 
-        temp = {getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == PLAYING_ICON_COLOR
-                or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255)
-                and getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) != (255, 255, 255)}
+        temp = getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == PLAYING_ICON_COLOR or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255) and getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) != (255, 255, 255)
 
-        if {getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == PLAYING_ICON_COLOR
-                or getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255)
-                and getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) != (255, 255, 255)}:
+        if temp:
             if time.time() - last_reposition > time_between_repositions:
                 last_reposition = time.time()
                 time_between_repositions = random_interval()*80
@@ -120,13 +116,6 @@ def main():
             time.sleep(random_interval())
             pyautogui.click()
             print('*click*')
-
-            if getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == PLAYING_ICON_COLOR:
-                print("PLAYING ICON TRIGGERED")
-            if getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255):
-                print("DIALOGUE ICON TRIGGERED")
-            if getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) == (255, 255, 255):
-                print("LOADING SCREEN TRIGGERED")
 
 
 Thread(target=main).start()
