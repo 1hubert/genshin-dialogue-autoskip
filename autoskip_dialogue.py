@@ -26,17 +26,22 @@ LOADING_SCREEN = (1200, 700)
 
 
 def getpixel(x, y):
+    """Return a tuple with RGB values of a pixel in location (x, y)."""
     dc = windll.user32.GetDC(0)
     return tuple(int.to_bytes(windll.gdi32.GetPixel(dc, x, y), 3, 'little'))
 
 
 def random_interval():
+    """Return a small randomized float from range (0.12, 0.3).
+    The way the float is randomized is made to be slightly more unpredictable.
+    """
     if random.randrange(1, 7) == 6:
         return random.uniform(0.18, 0.3)
     return random.uniform(0.12, 0.18)
 
 
 def random_cursor_position():
+    """Move cursor to a random position in range of the bottom dialogue option."""
     x = random.randrange(MIN_X, MAX_X+1)
     y = random.randrange(MIN_Y, MAX_Y+1)
     position = (x, y)
@@ -45,6 +50,7 @@ def random_cursor_position():
 
 
 def exit_program():
+    """Listen to keyboard presses and set status of the main function accordingly."""
     def on_press(key):
         if str(key) == 'Key.f8':
             main.status = 'run'
@@ -63,6 +69,7 @@ def exit_program():
 
 
 def main():
+    """Skip Genshin Impact dialogue when it's present based on the colors of 3 specific pixels."""
     main.status = 'pause'
     last_reposition = 0
     time_between_repositions = random_interval()*80
