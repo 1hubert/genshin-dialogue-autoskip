@@ -7,9 +7,6 @@ from pynput import keyboard
 from threading import Thread
 from ctypes import windll
 
-PLAYING_ICON_COLOR = (236, 229, 216)
-
-
 # Dimensions of bottom dialogue option.
 MIN_X = 1282
 MAX_X = 1775
@@ -84,7 +81,7 @@ def main():
             print('Main program closing')
             break
 
-        if (getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == PLAYING_ICON_COLOR or
+        if (getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216) or
             getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255) and
             getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) != (255, 255, 255)):
 
