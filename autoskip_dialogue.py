@@ -7,46 +7,27 @@ from pynput import keyboard
 from threading import Thread
 from ctypes import windll
 
-RESOLUTION = (1920, 1080)  # Supported: (1920, 1080) and (1024, 768)
 PLAYING_ICON_COLOR = (236, 229, 216)
 
 mouse = Controller()
 
-if RESOLUTION == (1920, 1080):
-    # Bottom dialogue option dimensions
-    MIN_X = 1282
-    MAX_X = 1775
-    MIN_Y = 774
-    MAX_Y = 825
 
-    # Pixel coordinates for white part of the auto play button
-    PLAYING_ICON_X = 111
-    PLAYING_ICON_Y = 46
+# Dimensions of bottom dialogue option.
+MIN_X = 1282
+MAX_X = 1775
+MIN_Y = 774
+MAX_Y = 825
 
-    # Pixel coordinates for white part of the speech bubble in bottom dialogue option
-    DIALOGUE_ICON_X = 1301
-    DIALOGUE_ICON_Y = 808
+# Pixel coordinates for white part of the auto play button.
+PLAYING_ICON_X = 111
+PLAYING_ICON_Y = 46
 
-    # Pixel coordinates near middle of the screen known to be white while the game is loading
-    LOADING_SCREEN = (1200, 700)
+# Pixel coordinates for white part of the speech bubble in bottom dialogue option.
+DIALOGUE_ICON_X = 1301
+DIALOGUE_ICON_Y = 808
 
-elif RESOLUTION == (1024, 768):  # Full HD windowed mode, window positioned in the bottom right corner
-    # Bottom dialogue option dimensions
-    MIN_X = 1584
-    MAX_X = 1766
-    MIN_Y = 920
-    MAX_Y = 942
-
-    # Pixel coordinates for white part of the auto play button
-    PLAYING_ICON_X = 954
-    PLAYING_ICON_Y = 337
-
-    # Pixel coordinates for white part of the speech bubble in bottom dialogue option
-    DIALOGUE_ICON_X = 1587
-    DIALOGUE_ICON_Y = 925
-
-    # Pixel coordinates near middle of the screen known to be white while the game is loading
-    LOADING_SCREEN = (1450, 790)
+# Pixel coordinates near middle of the screen known to be white while the game is loading.
+LOADING_SCREEN = (1200, 700)
 
 
 def getpixel(x, y):
