@@ -24,8 +24,8 @@ if RESOLUTION == (1920, 1080):
     PLAYING_ICON_Y = 46
 
     # Pixel coordinates for white part of the speech bubble in bottom dialogue option
-    DIALOGUE_ICON_X = 1297
-    DIALOGUE_ICON_Y = 791
+    DIALOGUE_ICON_X = 1301
+    DIALOGUE_ICON_Y = 808
 
     # Pixel coordinates near middle of the screen known to be white while the game is loading
     LOADING_SCREEN = (1200, 700)
