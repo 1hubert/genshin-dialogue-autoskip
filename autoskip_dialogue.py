@@ -9,8 +9,6 @@ from ctypes import windll
 
 PLAYING_ICON_COLOR = (236, 229, 216)
 
-mouse = Controller()
-
 
 # Dimensions of bottom dialogue option.
 MIN_X = 1282
@@ -100,5 +98,6 @@ def main():
             print('*click*')
 
 
+mouse = Controller()
 Thread(target=main).start()
 Thread(target=exit_program).start()
