@@ -1,1 +1,0 @@
-'s''s''s''s''a''a'Key.ctrl_l'\x01''s''e''x'Key.space'x''d'Key.ctrl_l'\x01'Key.backspaceKey.ctrl_l'\x01'Key.backspaceKey.backspaceKey.backspaceKey.backspaceKey.ctrl_l'\x01'Key.backspaceKey.backspaceKey.backspace's'Key.backspaceKey.ctrl_l'\x13''a'Key.ctrl_l'\x01'Key.backspace's''s''s''s''s'Key.backspaceKey.ctrl_l'\x01'Key.backspace
