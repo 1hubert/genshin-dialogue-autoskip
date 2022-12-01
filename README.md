@@ -1,6 +1,6 @@
 # genshin-dialogue-autoskip
 
-This script automatically speeds up dialogue in Genshin Impact, always choosing the bottom dialogue option. 
+This script automatically skips dialogue in Genshin Impact, always choosing the bottom dialogue option. 
 
 This is for educational purposes only. I advice against relying on the script in daily gameplay, as it will ruin your story experience.
 
@@ -9,5 +9,5 @@ The script requires the following:
 - Run in Admin mode to allow key and mouse emulation.
 
 Usage:
-- After running the script, press F8 to start skipping dialogue and F9 to pause.
+- After running the script, press F8 to start and F9 to pause.
 - Press F12 to quit.
