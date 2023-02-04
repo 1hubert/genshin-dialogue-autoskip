@@ -5,7 +5,6 @@ import pyautogui
 from pynput.mouse import Controller
 from pynput import keyboard
 from threading import Thread
-from ctypes import windll
 
 # Dimensions of bottom dialogue option.
 MIN_X = 1300
@@ -27,8 +26,7 @@ LOADING_SCREEN = (1200, 700)
 
 def getpixel(x, y):
     """Return a tuple with RGB values of a pixel in location (x, y)."""
-    dc = windll.user32.GetDC(0)
-    return tuple(int.to_bytes(windll.gdi32.GetPixel(dc, x, y), 3, 'little'))
+    return pyautogui.pixel(x, y)
 
 
 def random_interval():
