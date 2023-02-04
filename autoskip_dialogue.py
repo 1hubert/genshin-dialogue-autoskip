@@ -8,10 +8,10 @@ from threading import Thread
 from ctypes import windll
 
 # Dimensions of bottom dialogue option.
-MIN_X = 1282
-MAX_X = 1775
-MIN_Y = 774
-MAX_Y = 825
+MIN_X = 1300
+MAX_X = 1700
+MIN_Y = 790
+MAX_Y = 800
 
 # Pixel coordinates for white part of the auto play button.
 PLAYING_ICON_X = 111
