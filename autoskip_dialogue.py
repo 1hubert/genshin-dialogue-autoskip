@@ -43,7 +43,6 @@ def random_cursor_position():
     x = random.randrange(MIN_X, MAX_X + 1)
     y = random.randrange(MIN_Y, MAX_Y + 1)
     position = (x, y)
-    print('Cursor moved to: ', position)
     return position
 
 
@@ -98,7 +97,6 @@ def main():
 
             time.sleep(random_interval())
             pyautogui.click()
-            print('*click*')
 
 
 if __name__ == "__main__":
