@@ -5,13 +5,12 @@ import pyautogui
 from pynput.mouse import Controller
 from pynput import keyboard
 from threading import Thread
-from ctypes import windll
 
 # Dimensions of bottom dialogue option.
-MIN_X = 1282
-MAX_X = 1775
-MIN_Y = 774
-MAX_Y = 825
+MIN_X = 1300
+MAX_X = 1700
+MIN_Y = 790
+MAX_Y = 800
 
 # Pixel coordinates for white part of the auto play button.
 PLAYING_ICON_X = 111
@@ -27,8 +26,7 @@ LOADING_SCREEN = (1200, 700)
 
 def getpixel(x, y):
     """Return a tuple with RGB values of a pixel in location (x, y)."""
-    dc = windll.user32.GetDC(0)
-    return tuple(int.to_bytes(windll.gdi32.GetPixel(dc, x, y), 3, 'little'))
+    return pyautogui.pixel(x, y)
 
 
 def random_interval():
@@ -42,15 +40,15 @@ def random_interval():
 
 def random_cursor_position():
     """Move cursor to a random position in range of the bottom dialogue option."""
-    x = random.randrange(MIN_X, MAX_X+1)
-    y = random.randrange(MIN_Y, MAX_Y+1)
+    x = random.randrange(MIN_X, MAX_X + 1)
+    y = random.randrange(MIN_Y, MAX_Y + 1)
     position = (x, y)
-    print('Cursor moved to: ', position)
     return position
 
 
 def exit_program():
     """Listen to keyboard presses and set status of the main function accordingly."""
+
     def on_press(key):
         if str(key) == 'Key.f8':
             main.status = 'run'
@@ -72,7 +70,7 @@ def main():
     """Skip Genshin Impact dialogue when it's present based on the colors of 3 specific pixels."""
     main.status = 'pause'
     last_reposition = 0
-    time_between_repositions = random_interval()*80
+    time_between_repositions = random_interval() * 80
 
     print('-------------')
     print('F8 to start')
@@ -89,19 +87,19 @@ def main():
             break
 
         if (getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216) or
-            getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255) and
-            getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) != (255, 255, 255)):
+                getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255) and
+                getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) != (255, 255, 255)):
 
             if time.time() - last_reposition > time_between_repositions:
                 last_reposition = time.time()
-                time_between_repositions = random_interval()*80
+                time_between_repositions = random_interval() * 80
                 mouse.position = random_cursor_position()
 
             time.sleep(random_interval())
             pyautogui.click()
-            print('*click*')
 
 
-mouse = Controller()
-Thread(target=main).start()
-Thread(target=exit_program).start()
+if __name__ == "__main__":
+    mouse = Controller()
+    Thread(target=main).start()
+    Thread(target=exit_program).start()
