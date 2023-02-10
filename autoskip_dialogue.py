@@ -1,101 +1,126 @@
-import time
-import random
+from random import uniform, randrange
+from threading import Thread
+from time import sleep, time
+
+from pynput.keyboard import Listener, Key, KeyCode
+from pynput.mouse import Controller
 
 import pyautogui
-from pynput.mouse import Controller
-from pynput import keyboard
-from threading import Thread
+from typing import Tuple, Union
 
 # Dimensions of bottom dialogue option.
-MIN_X = 1300
-MAX_X = 1700
-MIN_Y = 790
-MAX_Y = 800
+BOTTOM_DIALOGUE_MIN_X: int = 1300
+BOTTOM_DIALOGUE_MAX_X: int = 1700
+BOTTOM_DIALOGUE_MIN_Y: int = 790
+BOTTOM_DIALOGUE_MAX_Y: int = 800
 
-# Pixel coordinates for white part of the auto play button.
-PLAYING_ICON_X = 111
-PLAYING_ICON_Y = 46
+# Pixel coordinates for white part of the autoplay button.
+PLAYING_ICON_X: int = 111
+PLAYING_ICON_Y: int = 46
 
 # Pixel coordinates for white part of the speech bubble in bottom dialogue option.
-DIALOGUE_ICON_X = 1301
-DIALOGUE_ICON_Y = 808
+DIALOGUE_ICON_X: int = 1301
+DIALOGUE_ICON_Y: int = 808
 
 # Pixel coordinates near middle of the screen known to be white while the game is loading.
-LOADING_SCREEN = (1200, 700)
+LOADING_SCREEN_X: int = 1200
+LOADING_SCREEN_Y: int = 700
 
 
-def getpixel(x, y):
-    """Return a tuple with RGB values of a pixel in location (x, y)."""
+def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
+    """
+    Return the RGB value of a pixel.
+    :param x: The x coordinate of the pixel.
+    :param y: The y coordinate of the pixel.
+    :return: The RGB value of the pixel.
+    """
+
     return pyautogui.pixel(x, y)
 
 
-def random_interval():
-    """Return a small randomized float from range (0.12, 0.3).
-    The way the float is randomized is made to be slightly more unpredictable.
+def random_interval() -> float:
     """
-    if random.randrange(1, 7) == 6:
-        return random.uniform(0.18, 0.3)
-    return random.uniform(0.12, 0.18)
+    Return a random interval between 0.12 and 0.18 seconds, or 0.18 and 0.3 seconds if a 6 is rolled.
+    :return: A random interval between 0.12 and 0.18 seconds, or 0.18 and 0.3 seconds if a 6 is rolled.
+    """
+
+    return uniform(0.18, 0.3) if randrange(1, 7) == 6 else uniform(0.12, 0.18)
 
 
-def random_cursor_position():
-    """Move cursor to a random position in range of the bottom dialogue option."""
-    x = random.randrange(MIN_X, MAX_X + 1)
-    y = random.randrange(MIN_Y, MAX_Y + 1)
-    position = (x, y)
-    return position
+def random_cursor_position() -> Tuple[int, int]:
+    """
+    The cursor is moved to a random position in the bottom dialogue option.
+    :return: A random (x, y) in range of the bottom dialogue option.
+    """
+
+    x: int = randrange(BOTTOM_DIALOGUE_MIN_X, BOTTOM_DIALOGUE_MAX_X + 1)
+    y: int = randrange(BOTTOM_DIALOGUE_MIN_Y, BOTTOM_DIALOGUE_MAX_Y + 1)
+
+    return x, y
 
 
-def exit_program():
-    """Listen to keyboard presses and set status of the main function accordingly."""
+def exit_program() -> None:
+    """
+    Listen for keyboard input to start, stop, or exit the program.
+    :return: None
+    """
 
-    def on_press(key):
-        if str(key) == 'Key.f8':
+    def on_press(key: (Union[Key, KeyCode, None])) -> None:
+        """
+        Start, stop, or exit the program based on the key pressed.
+        :param key: The key pressed.
+        :return: None
+        """
+
+        key_pressed: str = str(key)
+
+        if key_pressed == 'Key.f8':
             main.status = 'run'
             print('RUNNING')
-
-        elif str(key) == 'Key.f9':
+        elif key_pressed == 'Key.f9':
             main.status = 'pause'
             print('PAUSED')
-
-        elif str(key) == 'Key.f12':
+        elif key_pressed == 'Key.f12':
             main.status = 'exit'
             exit()
 
-    with keyboard.Listener(on_press=on_press) as listener:
+    with Listener(on_press=on_press) as listener:
         listener.join()
 
 
-def main():
-    """Skip Genshin Impact dialogue when it's present based on the colors of 3 specific pixels."""
-    main.status = 'pause'
-    last_reposition = 0
-    time_between_repositions = random_interval() * 80
+def main() -> None:
+    """
+    Skip Genshin Impact dialogue when it's present based on the colors of 3 specific pixels.
+    :return: None
+    """
 
-    print('-------------')
-    print('F8 to start')
-    print('F9 to stop')
-    print('F12 to quit')
-    print('-------------')
+    main.status = 'pause'
+    last_reposition: float = 0.0
+    time_between_repositions: float = random_interval() * 80
+
+    print('-------------\n'
+          'F8 to start\n'
+          'F9 to stop\n'
+          'F12 to quit\n'
+          '-------------')
 
     while True:
         while main.status == 'pause':
-            time.sleep(0.5)
+            sleep(0.5)
 
         if main.status == 'exit':
             print('Main program closing')
             break
 
-        if (getpixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216) or
-                getpixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255) and
-                getpixel(LOADING_SCREEN[0], LOADING_SCREEN[1]) != (255, 255, 255)):
-
-            if time.time() - last_reposition > time_between_repositions:
-                last_reposition = time.time()
+        if get_pixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216) or get_pixel(DIALOGUE_ICON_X,
+                                                                                     DIALOGUE_ICON_Y) == (
+                255, 255, 255) and get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
+            if time() - last_reposition > time_between_repositions:
+                last_reposition = time()
                 time_between_repositions = random_interval() * 80
                 mouse.position = random_cursor_position()
 
-            time.sleep(random_interval())
+            sleep(random_interval())
             pyautogui.click()
 
 
