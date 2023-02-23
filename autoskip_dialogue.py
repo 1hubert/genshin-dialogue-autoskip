@@ -1,12 +1,11 @@
-from random import uniform, randrange
+from random import randrange, uniform
 from threading import Thread
+from typing import Tuple, Union
 from time import sleep, time
 
-from pynput.keyboard import Listener, Key, KeyCode
-from pynput.mouse import Controller
-
 import pyautogui
-from typing import Tuple, Union
+from pynput.mouse import Controller
+from pynput.keyboard import Key, KeyCode, Listener
 
 # Dimensions of bottom dialogue option.
 BOTTOM_DIALOGUE_MIN_X: int = 1300
