@@ -2,10 +2,14 @@ from random import randrange, uniform
 from threading import Thread
 from typing import Tuple, Union
 from time import sleep, time
+import vgamepad as vg
 
 import pyautogui
 from pynput.mouse import Controller
 from pynput.keyboard import Key, KeyCode, Listener
+
+# Gamepad DS4
+DS4_GAMEPAD: vg.VDS4Gamepad
 
 # Dimensions of bottom dialogue option.
 BOTTOM_DIALOGUE_MIN_X: int = 1300
@@ -14,16 +18,37 @@ BOTTOM_DIALOGUE_MIN_Y: int = 790
 BOTTOM_DIALOGUE_MAX_Y: int = 800
 
 # Pixel coordinates for white part of the autoplay button.
-PLAYING_ICON_X: int = 111
-PLAYING_ICON_Y: int = 46
+KBM_PLAYING_ICON_X: int = 111
+KBM_PLAYING_ICON_Y: int = 46
+
+# Pixel coordinates for pink pixel of the autoplay button (DualShock 4 square).
+DS4_PLAYING_ICON_X: int = 1432
+DS4_PLAYING_ICON_Y: int = 1010
 
 # Pixel coordinates for white part of the speech bubble in bottom dialogue option.
-DIALOGUE_ICON_X: int = 1301
-DIALOGUE_ICON_Y: int = 808
+KBM_DIALOGUE_ICON_X: int = 1301
+KBM_DIALOGUE_ICON_Y: int = 808
+
+# Pixel coordinates for white part of the speech bubble in bottom dialogue option. (DualShock 4)
+DS4_DIALOGUE_ICON_X: int = 1300
+DS4_DIALOGUE_ICON_Y: int = 770
 
 # Pixel coordinates near middle of the screen known to be white while the game is loading.
 LOADING_SCREEN_X: int = 1200
 LOADING_SCREEN_Y: int = 700
+
+
+def define_ui() -> str:
+    """
+    Return bool value that defines UI
+    """
+
+    if get_pixel(1432, 1010) == (204, 114, 238):
+        ui = "DS4_RUS"
+    else:
+        ui = "KBM"
+
+    return ui
 
 
 def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
@@ -111,13 +136,25 @@ def main() -> None:
             print('Main program closing')
             break
 
-        if get_pixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216) or get_pixel(DIALOGUE_ICON_X,
-                                                                                     DIALOGUE_ICON_Y) == (
-                255, 255, 255) and get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
-            if time() - last_reposition > time_between_repositions:
-                last_reposition = time()
-                time_between_repositions = random_interval() * 80
-                mouse.position = random_cursor_position()
+        if define_ui() == "DS4_RUS":
+            if get_pixel(DS4_PLAYING_ICON_X, DS4_PLAYING_ICON_Y) == (204, 114, 238) \
+                    or get_pixel(DS4_DIALOGUE_ICON_X, DS4_DIALOGUE_ICON_Y) == (255, 255, 255) \
+                    and get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
+                DS4_GAMEPAD.press_button(button=vg.DS4_BUTTONS.DS4_BUTTON_CROSS)
+                DS4_GAMEPAD.update()
+                sleep(random_interval())
+                DS4_GAMEPAD.release_button(button=vg.DS4_BUTTONS.DS4_BUTTON_CROSS)
+                DS4_GAMEPAD.update()
+                sleep(random_interval())
+
+        elif define_ui() == "KBM":
+            if get_pixel(KBM_PLAYING_ICON_X, KBM_PLAYING_ICON_Y) == (236, 229, 216) \
+                    or get_pixel(KBM_DIALOGUE_ICON_X, KBM_DIALOGUE_ICON_Y) == (255, 255, 255) \
+                    and get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
+                if time() - last_reposition > time_between_repositions:
+                    last_reposition = time()
+                    time_between_repositions = random_interval() * 80
+                    mouse.position = random_cursor_position()
 
             sleep(random_interval())
             pyautogui.click()
