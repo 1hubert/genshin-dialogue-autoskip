@@ -1,9 +1,6 @@
 # genshin-dialogue-autoskip
 
-This script automatically skips dialogue in Genshin Impact.
-
-Chooses the bottom dialogue option with keyboard + mouse.
-Chooses any available dialogue option with DS4 gamepad.
+This script automatically skips dialogue in Genshin Impact, always chooses the bottom dialogue option.
 
 This is for educational purposes only. I advice against relying on the script in daily gameplay, as it will ruin your story experience.
 
@@ -16,5 +13,5 @@ Usage:
 - Press F12 to quit.
 
 NB!
-Program automatically defines the UI version, currently autodetects ENG/RUS keyboard+mouse UI and RUS DualShock4 UI.
+Program automatically defines the UI version, currently autodetects ENG/RUS keyboard+mouse UI and ENG/RUS DualShock 4 gamepad UI.
 To use with DS4 gamepad, the autoplay button must be activated using square button.
