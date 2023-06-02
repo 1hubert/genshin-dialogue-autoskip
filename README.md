@@ -20,3 +20,4 @@ This script automatically skips dialogue in Genshin Impact, always chooses the b
 
 ## Xbox Gamepads Support
 - The script works in the same way as with DS4.
+- To use with Xbox Gamepad, the autoplay button must be activated using the "X" button
