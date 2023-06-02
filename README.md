@@ -17,3 +17,7 @@ This script automatically skips dialogue in Genshin Impact, always chooses the b
 ## DualShock 4 Support
 - The script automatically defines the UI version, currently autodetects ENG/RUS keyboard+mouse UI and ENG/RUS DualShock 4 gamepad UI
 - To use with DS4 gamepad, the autoplay button must be activated using the square button
+
+## Xbox Gamepads Support
+- The script works in the same way as with DS4
+- To use with Xbox Gamepad, the autoplay button must be activated using the "X" button
