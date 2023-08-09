@@ -19,7 +19,8 @@ PLAYING_ICON_Y = 46
 
 # Pixel coordinates for white part of the speech bubble in bottom dialogue option.
 DIALOGUE_ICON_X = 1301
-DIALOGUE_ICON_Y = 808
+DIALOGUE_ICON_LOWER_Y = 808
+DIALOGUE_ICON_HIGHER_Y = 790
 
 # Pixel coordinates near middle of the screen known to be white while the game is loading.
 LOADING_SCREEN_X = 1200
@@ -92,6 +93,23 @@ def main() -> None:
     Skip Genshin Impact dialogue when it's present based on the colors of 3 specific pixels.
     :return: None
     """
+    def is_dialogue_playing():
+        return get_pixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216)
+
+    def is_dialogue_option_available():
+        # Confirm loading screen is not white
+        if get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) == (255, 255, 255):
+            return False
+
+        # Check if lower dialogue icon pixel is white
+        if get_pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_LOWER_Y) == (255, 255, 255):
+            return True
+
+        # Check if higher dialogue icon pixel is white
+        if get_pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_HIGHER_Y) == (255, 255, 255):
+            return True
+
+        return False
 
     main.status = 'pause'
     last_reposition: float = 0.0
@@ -111,13 +129,15 @@ def main() -> None:
             print('Main program closing')
             break
 
-        if get_pixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216) \
-            or get_pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_Y) == (255, 255, 255) and get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
+        if is_dialogue_playing() or is_dialogue_option_available():
             if time() - last_reposition > time_between_repositions:
                 last_reposition = time()
                 time_between_repositions = random_interval() * 40
                 mouse.position = random_cursor_position()
 
+            # pyautogui.press('f')
+            # pyautogui.click()
+            # pyautogui.press('space')
             pyautogui.click()
 
 
