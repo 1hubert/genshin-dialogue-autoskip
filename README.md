@@ -14,3 +14,6 @@ This script automatically skips dialogue in Genshin Impact, always chooses the b
 1. Run `autoskip_dialogue.py` with Admin privileges
 	-  Tip: You can right-click the handy `run.bat` file and select "Run as administrator"
 2. When you're ready, press F8 on your keyboard to start the main loop
+
+## Experimental Gamepad Support
+- The `main` branch of this repo which you're currently on, is for keyboard+mouse only. If you're using a gamepad to play the game, switch to the `gamepad_only` branch!
