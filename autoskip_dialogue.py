@@ -14,10 +14,6 @@ BOTTOM_DIALOGUE_MAX_X: int = 1700
 BOTTOM_DIALOGUE_MIN_Y: int = 790
 BOTTOM_DIALOGUE_MAX_Y: int = 800
 
-# Pixel coordinates for white part of the autoplay button.
-KBM_AUTOPLAY_ICON_X: int = 111
-KBM_AUTOPLAY_ICON_Y: int = 46
-
 # Pixel coordinates for pink pixel of the autoplay button (DualShock 4 Square and Xbox "X"). eng
 DS4_ENG_AUTOPLAY_ICON_X: int = 1450
 DS4_ENG_AUTOPLAY_ICON_Y: int = 1010
@@ -41,9 +37,6 @@ DS4_RUS_CONFIRM_ICON_X: int = 1628
 DS4_RUS_CONFIRM_ICON_Y: int = 1013
 XBOX_RUS_CONFIRM_ICON_X: int = 1624
 XBOX_RUS_CONFIRM_ICON_Y: int = 1005
-# Pixel coordinates for white part of the speech bubble in bottom dialogue option.
-KBM_DIALOGUE_ICON_X: int = 1301
-KBM_DIALOGUE_ICON_Y: int = 808
 
 # Pixel coordinates for white part of the speech bubble in bottom dialogue option. (DualShock 4 and Xbox)
 DS4_DIALOGUE_ICON_X: int = 1300
@@ -67,8 +60,6 @@ def define_ui() -> str:
         ui = "DS4_ENG"
     elif get_pixel(1432, 1010) == (204, 114, 238) and get_pixel(1628, 1013) == (56, 161, 229):
         ui = "DS4_RUS"
-    elif get_pixel(KBM_AUTOPLAY_ICON_X, KBM_AUTOPLAY_ICON_Y) == (236, 229, 216):
-        ui = "KBM"
     elif get_pixel(1444, 1006) == (50, 175, 255) and get_pixel(1624, 1008) == (56, 161, 229):
         ui = "XBOX_ENG"
     elif get_pixel(1444, 1006) == (50, 175, 255) and get_pixel(1624, 1008) == (56, 161, 229):
@@ -147,10 +138,6 @@ def is_dialogue() -> bool:
             and get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
         return True
 
-    if get_pixel(KBM_DIALOGUE_ICON_X, KBM_DIALOGUE_ICON_Y) == (255, 255, 255) \
-            and get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
-        return True
-    
     if get_pixel(XBOX_DIALOGUE_ICON_X, XBOX_DIALOGUE_ICON_Y) == (255, 255, 255) \
             and get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
         return True
@@ -254,12 +241,6 @@ def main() -> None:
             if is_dialogue():
                 select_last_dialogue_option(ds4_gamepad)
             press_cross(ds4_gamepad)
-
-        if define_ui() == "KBM" or is_dialogue():
-            if time() - last_reposition > time_between_repositions:
-                last_reposition = time()
-                time_between_repositions = random_interval() * 40
-                mouse.position = random_cursor_position()
 
         if define_ui() == "XBOX_ENG" or is_dialogue():
             if is_dialogue():
