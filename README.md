@@ -1,4 +1,4 @@
-# genshin-dialogue-autoskip
+# genshin-dialogue-autoskip (Experimental GamePad Support version)
 
 ## Overview
 This script automatically skips dialogue in Genshin Impact, always chooses the bottom dialogue option.
@@ -22,6 +22,3 @@ This script automatically skips dialogue in Genshin Impact, always chooses the b
 ## Xbox Gamepads Support
 - The script works in the same way as with DS4
 - To use with Xbox Gamepad, the autoplay button must be activated using the "X" button
-
-## Keyboard and Mouse Only Version
-- If you're just using keyboard and mouse to play the game and don't need the gamepad support, you may prefer to use the `kbm_only` branch. That way you'll only use what you need, without the added complexity of additional input device support.
