@@ -1,30 +1,78 @@
+import os
 from random import randint, uniform
 from threading import Thread
 from typing import Tuple, Union
 from time import sleep, time
+from win32api import GetSystemMetrics
 
 import pyautogui
 from pynput.mouse import Controller
 from pynput.keyboard import Key, KeyCode, Listener
+from dotenv import load_dotenv, find_dotenv, set_key
+
+# Initial setup
+os.system('cls')
+load_dotenv()
+print('Welcome to Genshin Impact Dialogue Skipper\n')
+
+# Check if either screen dimension is not yet set in .env
+if os.environ['WIDTH'] == '' or os.environ['HEIGHT'] == '':
+    # Detect and set screen dimensions
+    SCREEN_WIDTH = GetSystemMetrics(0)
+    SCREEN_HEIGHT = GetSystemMetrics(1)
+
+    # In case the resolution is not correct, ask for the correct resolution
+    print(f'Detected Resolution: {SCREEN_WIDTH}x{SCREEN_HEIGHT}')
+    print('Is the resolution correct? (y/n)')
+    response = input()
+
+    if response.lower() == 'n':
+        print('Enter resolution width: ', end='')
+        SCREEN_WIDTH = int(input())
+        print('Enter resolution height: ', end='')
+        SCREEN_HEIGHT = int(input())
+        print('\nNew resolution set to ' + str(SCREEN_WIDTH) + 'x' + str(SCREEN_HEIGHT) + '\n')
+
+    # Write changes to .env file
+    dotenv_file = find_dotenv()
+    set_key(dotenv_file, "WIDTH", str(SCREEN_WIDTH), quote_mode="never")
+    set_key(dotenv_file, "HEIGHT", str(SCREEN_HEIGHT), quote_mode="never")
+else:
+    # Read screen dimensions from .env
+    SCREEN_WIDTH = int(os.getenv('WIDTH'))
+    SCREEN_HEIGHT = int(os.getenv('HEIGHT'))
+
+# Adjust variables to the width and height of the screen
+def width_adjust(x: int) -> int:
+    """
+    Adjust variables to the width of the screen
+    """
+    return int(x/1920 * SCREEN_WIDTH)
+
+def height_adjust(y: int) -> int:
+    """
+    Adjust variables to the height of the screen
+    """
+    return int(y/1080 * SCREEN_HEIGHT)
 
 # Dimensions of bottom dialogue option.
-BOTTOM_DIALOGUE_MIN_X = 1300
-BOTTOM_DIALOGUE_MAX_X = 1700
-BOTTOM_DIALOGUE_MIN_Y = 790
-BOTTOM_DIALOGUE_MAX_Y = 800
+BOTTOM_DIALOGUE_MIN_X = width_adjust(1300)
+BOTTOM_DIALOGUE_MAX_X = width_adjust(1700)
+BOTTOM_DIALOGUE_MIN_Y = height_adjust(790)
+BOTTOM_DIALOGUE_MAX_Y = height_adjust(800)
 
 # Pixel coordinates for white part of the autoplay button.
-PLAYING_ICON_X = 84
-PLAYING_ICON_Y = 46
+PLAYING_ICON_X = width_adjust(84)
+PLAYING_ICON_Y = height_adjust(46)
 
 # Pixel coordinates for white part of the speech bubble in bottom dialogue option.
-DIALOGUE_ICON_X = 1301
-DIALOGUE_ICON_LOWER_Y = 808
-DIALOGUE_ICON_HIGHER_Y = 790
+DIALOGUE_ICON_X = width_adjust(1301)
+DIALOGUE_ICON_LOWER_Y = height_adjust(808)
+DIALOGUE_ICON_HIGHER_Y = height_adjust(790)
 
 # Pixel coordinates near middle of the screen known to be white while the game is loading.
-LOADING_SCREEN_X = 1200
-LOADING_SCREEN_Y = 700
+LOADING_SCREEN_X: int = width_adjust(1200)
+LOADING_SCREEN_Y: int = height_adjust(700)
 
 
 def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
