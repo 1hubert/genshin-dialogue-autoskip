@@ -71,8 +71,8 @@ DIALOGUE_ICON_LOWER_Y = height_adjust(808)
 DIALOGUE_ICON_HIGHER_Y = height_adjust(790)
 
 # Pixel coordinates near middle of the screen known to be white while the game is loading.
-LOADING_SCREEN_X: int = width_adjust(1200)
-LOADING_SCREEN_Y: int = height_adjust(700)
+LOADING_SCREEN_X = width_adjust(1200)
+LOADING_SCREEN_Y = height_adjust(700)
 
 
 def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
@@ -114,7 +114,7 @@ def on_press(key: (Union[Key, KeyCode, None])) -> None:
     :return: None
     """
 
-    key_pressed: str = str(key)
+    key_pressed = str(key)
 
     if key_pressed == 'Key.f8':
         main.status = 'run'
@@ -151,8 +151,8 @@ def main() -> None:
         return False
 
     main.status = 'pause'
-    last_reposition: float = 0.0
-    time_between_repositions: float = random_interval() * 40
+    last_reposition = 0.0
+    time_between_repositions = random_interval() * 40
 
     print('-------------\n'
           'F8 to start\n'
