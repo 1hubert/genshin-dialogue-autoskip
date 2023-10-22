@@ -26,7 +26,7 @@ if os.environ['WIDTH'] == '' or os.environ['HEIGHT'] == '':
     print('Is the resolution correct? (y/n)')
     response = input()
 
-    if response.lower() == 'n':
+    if response.lower().startswith('n'):
         print('Enter resolution width: ', end='')
         SCREEN_WIDTH = int(input())
         print('Enter resolution height: ', end='')
