@@ -174,9 +174,6 @@ def main() -> None:
                 time_between_repositions = random_interval() * 40
                 mouse.position = random_cursor_position()
 
-            # pyautogui.press('f')
-            # pyautogui.click()
-            # pyautogui.press('space')
             pyautogui.click()
 
 
