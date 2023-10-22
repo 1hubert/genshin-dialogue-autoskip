@@ -107,33 +107,24 @@ def random_cursor_position() -> Tuple[int, int]:
     return x, y
 
 
-def exit_program() -> None:
+def on_press(key: (Union[Key, KeyCode, None])) -> None:
     """
-    Listen for keyboard input to start, stop, or exit the program.
+    Start, stop, or exit the program based on the key pressed.
+    :param key: The key pressed.
     :return: None
     """
 
-    def on_press(key: (Union[Key, KeyCode, None])) -> None:
-        """
-        Start, stop, or exit the program based on the key pressed.
-        :param key: The key pressed.
-        :return: None
-        """
+    key_pressed: str = str(key)
 
-        key_pressed: str = str(key)
-
-        if key_pressed == 'Key.f8':
-            main.status = 'run'
-            print('RUNNING')
-        elif key_pressed == 'Key.f9':
-            main.status = 'pause'
-            print('PAUSED')
-        elif key_pressed == 'Key.f12':
-            main.status = 'exit'
-            exit()
-
-    with Listener(on_press=on_press) as listener:
-        listener.join()
+    if key_pressed == 'Key.f8':
+        main.status = 'run'
+        print('RUNNING')
+    elif key_pressed == 'Key.f9':
+        main.status = 'pause'
+        print('PAUSED')
+    elif key_pressed == 'Key.f12':
+        main.status = 'exit'
+        exit()
 
 
 def main() -> None:
@@ -192,4 +183,6 @@ def main() -> None:
 if __name__ == "__main__":
     mouse = Controller()
     Thread(target=main).start()
-    Thread(target=exit_program).start()
+
+    with Listener(on_press=on_press) as listener:
+        listener.join()
