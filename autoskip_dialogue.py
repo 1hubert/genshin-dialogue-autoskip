@@ -127,6 +127,14 @@ def main() -> None:
     Skip Genshin Impact dialogue when it's present based on the colors of 3 specific pixels.
     :return: None
     """
+
+    def is_genshinimpact_active():
+        # Check if Genshin Impact is the active window
+        try:
+            return pyautogui.getActiveWindowTitle() == "Genshin Impact"
+        except Exception as error:
+            return True
+
     def is_dialogue_playing():
         return get_pixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216)
 
@@ -163,7 +171,7 @@ def main() -> None:
             print('Main program closing')
             break
 
-        if is_dialogue_playing() or is_dialogue_option_available():
+        if is_genshinimpact_active() and (is_dialogue_playing() or is_dialogue_option_available()):
             if time() - last_reposition > time_between_repositions:
                 last_reposition = time()
                 time_between_repositions = random_interval() * 40
