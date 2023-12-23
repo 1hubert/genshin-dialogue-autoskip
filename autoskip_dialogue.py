@@ -2,7 +2,7 @@ import os
 from random import randint, uniform
 from threading import Thread
 from typing import Tuple, Union
-from time import sleep, time
+from time import sleep, perf_counter
 from win32api import GetSystemMetrics
 
 import pyautogui
@@ -172,8 +172,8 @@ def main() -> None:
             break
 
         if is_genshinimpact_active() and (is_dialogue_playing() or is_dialogue_option_available()):
-            if time() - last_reposition > time_between_repositions:
-                last_reposition = time()
+            if perf_counter() - last_reposition > time_between_repositions:
+                last_reposition = perf_counter()
                 time_between_repositions = random_interval() * 40
                 mouse.position = random_cursor_position()
 
