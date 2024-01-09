@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "genshin-dialogue-autoskip-main"
+name = "genshin-dialogue-autoskip"
 version = "0.1.0"
 description = ""
-authors = ["Levy Nunes <levy.vix@gmail.com>"]
+authors = ""
 readme = "README.md"
 
 [tool.poetry.dependencies]
