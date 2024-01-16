@@ -6,9 +6,10 @@ This script automatically skips dialogue in Genshin Impact, always chooses the b
 *This is for educational purposes only. I advice against relying on the script in daily gameplay, as it will ruin your story experience.*
 
 ## Requirements
-- The game running on Main Display 1
+- The game running on primary display
 - The script run as Admin to allow key and mouse emulation
 - Required Python packages installed with `pip install -r requirements.txt`
+- In the game's settings, navigate to **Settings > Other** and set **Auto-Play Story** to **Off**.
 
 ## Usage
 1. Run `autoskip_dialogue.py` with Admin privileges
