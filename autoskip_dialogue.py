@@ -118,11 +118,8 @@ def main() -> None:
     """
 
     def is_genshinimpact_active():
-        # Check if Genshin Impact is the active window
-        try:
-            return getActiveWindowTitle() == "Genshin Impact"
-        except Exception as error:
-            return True
+        """Check if Genshin Impact is the active window."""
+        return getActiveWindowTitle() == "Genshin Impact"
 
     def is_dialogue_playing():
         return pixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216)
