@@ -2,13 +2,13 @@ import os
 from random import randint, uniform
 from threading import Thread
 from typing import Tuple, Union
-from time import sleep, perf_counter
+from time import perf_counter, sleep
 from win32api import GetSystemMetrics
 
-import pyautogui
+from pyautogui import click, getActiveWindowTitle, pixel
 from pynput.mouse import Controller
 from pynput.keyboard import Key, KeyCode, Listener
-from dotenv import load_dotenv, find_dotenv, set_key
+from dotenv import find_dotenv, load_dotenv, set_key
 
 # Initial setup
 os.system('cls')
@@ -120,24 +120,24 @@ def main() -> None:
     def is_genshinimpact_active():
         # Check if Genshin Impact is the active window
         try:
-            return pyautogui.getActiveWindowTitle() == "Genshin Impact"
+            return getActiveWindowTitle() == "Genshin Impact"
         except Exception as error:
             return True
 
     def is_dialogue_playing():
-        return pyautogui.pixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216)
+        return pixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216)
 
     def is_dialogue_option_available():
         # Confirm loading screen is not white
-        if pyautogui.pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) == (255, 255, 255):
+        if pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) == (255, 255, 255):
             return False
 
         # Check if lower dialogue icon pixel is white
-        if pyautogui.pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_LOWER_Y) == (255, 255, 255):
+        if pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_LOWER_Y) == (255, 255, 255):
             return True
 
         # Check if higher dialogue icon pixel is white
-        if pyautogui.pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_HIGHER_Y) == (255, 255, 255):
+        if pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_HIGHER_Y) == (255, 255, 255):
             return True
 
         return False
@@ -166,7 +166,7 @@ def main() -> None:
                 time_between_repositions = random_interval() * 40
                 mouse.position = random_cursor_position()
 
-            pyautogui.click()
+            click()
 
 
 if __name__ == "__main__":
