@@ -70,17 +70,6 @@ LOADING_SCREEN_X = width_adjust(1200)
 LOADING_SCREEN_Y = height_adjust(700)
 
 
-def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
-    """
-    Return the RGB value of a pixel.
-    :param x: The x coordinate of the pixel.
-    :param y: The y coordinate of the pixel.
-    :return: The RGB value of the pixel.
-    """
-
-    return pyautogui.pixel(x, y)
-
-
 def random_interval() -> float:
     """
     Return a random interval between 0.12 and 0.18 seconds, or 0.18 and 0.2 seconds if a 6 is rolled.
@@ -136,19 +125,19 @@ def main() -> None:
             return True
 
     def is_dialogue_playing():
-        return get_pixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216)
+        return pyautogui.pixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216)
 
     def is_dialogue_option_available():
         # Confirm loading screen is not white
-        if get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) == (255, 255, 255):
+        if pyautogui.pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) == (255, 255, 255):
             return False
 
         # Check if lower dialogue icon pixel is white
-        if get_pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_LOWER_Y) == (255, 255, 255):
+        if pyautogui.pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_LOWER_Y) == (255, 255, 255):
             return True
 
         # Check if higher dialogue icon pixel is white
-        if get_pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_HIGHER_Y) == (255, 255, 255):
+        if pyautogui.pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_HIGHER_Y) == (255, 255, 255):
             return True
 
         return False
