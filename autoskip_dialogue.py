@@ -2,45 +2,88 @@ from random import randrange, uniform
 from threading import Thread
 from typing import Union
 from time import sleep
-import vgamepad as vg
+import os
 
+import vgamepad as vg
+from win32api import GetSystemMetrics
+from dotenv import load_dotenv, find_dotenv, set_key
 from pyautogui import pixel, click
 from pynput.mouse import Controller
 from pynput.keyboard import Key, KeyCode, Listener
 
+# Initial setup
+os.system('cls')
+load_dotenv()
+print('Welcome to Genshin Impact Dialogue Skipper for gamepads\n')
+
+# Check if either screen dimension is missing from .env
+if os.environ['WIDTH'] == '' or os.environ['HEIGHT'] == '':
+    # Detect and set screen dimensions
+    SCREEN_WIDTH = GetSystemMetrics(0)
+    SCREEN_HEIGHT = GetSystemMetrics(1)
+
+    # In case the resolution is not correct, ask for the correct resolution
+    print(f'Detected Resolution: {SCREEN_WIDTH}x{SCREEN_HEIGHT}')
+    print('Is the resolution correct? (y/n)')
+    response = input()
+
+    if response.lower().startswith('n'):
+        print('Enter resolution width: ', end='')
+        SCREEN_WIDTH = int(input())
+        print('Enter resolution height: ', end='')
+        SCREEN_HEIGHT = int(input())
+        print('\nNew resolution set to ' + str(SCREEN_WIDTH) + 'x' + str(SCREEN_HEIGHT) + '\n')
+
+    # Write changes to .env file
+    dotenv_file = find_dotenv()
+    set_key(dotenv_file, "WIDTH", str(SCREEN_WIDTH), quote_mode="never")
+    set_key(dotenv_file, "HEIGHT", str(SCREEN_HEIGHT), quote_mode="never")
+else:
+    # Read screen dimensions from .env
+    SCREEN_WIDTH = int(os.getenv('WIDTH'))
+    SCREEN_HEIGHT = int(os.getenv('HEIGHT'))
+
+def width_adjust(x: int) -> int:
+    """Adjust variables to the width of the screen."""
+    return int(x/1920 * SCREEN_WIDTH)
+
+def height_adjust(y: int) -> int:
+    """Adjust variables to the height of the screen."""
+    return int(y/1080 * SCREEN_HEIGHT)
+
 # Pixel coordinates for pink pixel of the autoplay button (DualShock 4 Square and Xbox 'X'). eng
-DS4_ENG_AUTOPLAY_ICON_X: int = 1450
-DS4_ENG_AUTOPLAY_ICON_Y: int = 1010
-XBOX_ENG_AUTOPLAY_ICON_X: int = 1450
-XBOX_ENG_AUTOPLAY_ICON_Y: int = 1004
+DS4_ENG_AUTOPLAY_ICON_X: int = width_adjust(1450)
+DS4_ENG_AUTOPLAY_ICON_Y: int = height_adjust(1010)
+XBOX_ENG_AUTOPLAY_ICON_X: int = width_adjust(1444)
+XBOX_ENG_AUTOPLAY_ICON_Y: int = height_adjust(1006)
 
 # Pixel coordinates for blue pixel of the confirm button (DualShock 4 cross and Xbox 'B'). eng
-DS4_ENG_CONFIRM_ICON_X: int = 1683
-DS4_ENG_CONFIRM_ICON_Y: int = 1013
-XBOX_ENG_CONFIRM_ICON_X: int = 1626
-XBOX_ENG_CONFIRM_ICON_Y: int = 1004
+DS4_ENG_CONFIRM_ICON_X: int = width_adjust(1683)
+DS4_ENG_CONFIRM_ICON_Y: int = height_adjust(1013)
+XBOX_ENG_CONFIRM_ICON_X: int = width_adjust(1624)
+XBOX_ENG_CONFIRM_ICON_Y: int = height_adjust(1008)
 
 # Pixel coordinates for pink pixel of the autoplay button (DualShock 4 square and Xbox 'X'). rus
-DS4_RUS_AUTOPLAY_ICON_X: int = 1432
-DS4_RUS_AUTOPLAY_ICON_Y: int = 1010
-XBOX_RUS_AUTOPLAY_ICON_X: int = 1450
-XBOX_RUS_AUTOPLAY_ICON_Y: int = 1004
+DS4_RUS_AUTOPLAY_ICON_X: int = width_adjust(1432)
+DS4_RUS_AUTOPLAY_ICON_Y: int = height_adjust(1010)
+XBOX_RUS_AUTOPLAY_ICON_X: int = width_adjust(1444)
+XBOX_RUS_AUTOPLAY_ICON_Y: int = height_adjust(1006)
 
 # Pixel coordinates for blue pixel of the confirm button (DualShock 4 cross and Xbox 'B'). rus
-DS4_RUS_CONFIRM_ICON_X: int = 1628
-DS4_RUS_CONFIRM_ICON_Y: int = 1013
-XBOX_RUS_CONFIRM_ICON_X: int = 1624
-XBOX_RUS_CONFIRM_ICON_Y: int = 1005
+DS4_RUS_CONFIRM_ICON_X: int = width_adjust(1628)
+DS4_RUS_CONFIRM_ICON_Y: int = height_adjust(1013)
+XBOX_RUS_CONFIRM_ICON_X: int = width_adjust(1624)
+XBOX_RUS_CONFIRM_ICON_Y: int = height_adjust(1005)
 
 # Pixel coordinates for white part of the speech bubble in bottom dialogue option. (DualShock 4 and Xbox)
-DS4_DIALOGUE_ICON_X: int = 1300
-DS4_DIALOGUE_ICON_Y: int = 770
-XBOX_DIALOGUE_ICON_X: int = 1300
-XBOX_DIALOGUE_ICON_Y: int = 770
+DS4_DIALOGUE_ICON_X: int = width_adjust(1300)
+DS4_DIALOGUE_ICON_Y: int = height_adjust(770)
+XBOX_DIALOGUE_ICON_X: int = width_adjust(1300)
+XBOX_DIALOGUE_ICON_Y: int = height_adjust(770)
 
 # Pixel coordinates near middle of the screen known to be white while the game is loading.
-LOADING_SCREEN_X: int = 1200
-LOADING_SCREEN_Y: int = 700
+LOADING_SCREEN_X: int = width_adjust(1200)
+LOADING_SCREEN_Y: int = height_adjust(700)
 
 def define_ui() -> str:
     """
@@ -50,13 +93,13 @@ def define_ui() -> str:
     """
     ui = ''
 
-    if pixel(1450, 1010) == (204, 114, 238) and pixel(1683, 1013) == (56, 161, 229):
+    if pixel(DS4_ENG_AUTOPLAY_ICON_X, DS4_ENG_AUTOPLAY_ICON_Y) == (204, 114, 238) and pixel(DS4_ENG_CONFIRM_ICON_X, DS4_ENG_CONFIRM_ICON_Y) == (56, 161, 229):
         ui = 'DS4_ENG'
-    elif pixel(1432, 1010) == (204, 114, 238) and pixel(1628, 1013) == (56, 161, 229):
+    elif pixel(DS4_RUS_AUTOPLAY_ICON_X, DS4_RUS_AUTOPLAY_ICON_Y) == (204, 114, 238) and pixel(DS4_RUS_CONFIRM_ICON_X, DS4_RUS_CONFIRM_ICON_Y) == (56, 161, 229):
         ui = 'DS4_RUS'
-    elif pixel(1444, 1006) == (50, 175, 255) and pixel(1624, 1008) == (56, 161, 229):
+    elif pixel(XBOX_ENG_AUTOPLAY_ICON_X, XBOX_ENG_AUTOPLAY_ICON_Y) == (50, 175, 255) and pixel(XBOX_ENG_CONFIRM_ICON_X, XBOX_ENG_CONFIRM_ICON_Y) == (56, 161, 229):
         ui = 'XBOX_ENG'
-    elif pixel(1444, 1006) == (50, 175, 255) and pixel(1624, 1008) == (56, 161, 229):
+    elif pixel(XBOX_RUS_AUTOPLAY_ICON_X, XBOX_RUS_AUTOPLAY_ICON_Y) == (50, 175, 255) and pixel(XBOX_RUS_CONFIRM_ICON_X, XBOX_ENG_CONFIRM_ICON_Y) == (56, 161, 229):
         ui = 'XBOX_RUS'
 
     return ui
