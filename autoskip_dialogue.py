@@ -1,10 +1,10 @@
 from random import randrange, uniform
 from threading import Thread
-from typing import Tuple, Union
-from time import sleep, time
+from typing import Union
+from time import sleep
 import vgamepad as vg
 
-import pyautogui
+from pyautogui import pixel, click
 from pynput.mouse import Controller
 from pynput.keyboard import Key, KeyCode, Listener
 
@@ -50,27 +50,16 @@ def define_ui() -> str:
     """
     ui = ""
 
-    if get_pixel(1450, 1010) == (204, 114, 238) and get_pixel(1683, 1013) == (56, 161, 229):
+    if pixel(1450, 1010) == (204, 114, 238) and pixel(1683, 1013) == (56, 161, 229):
         ui = "DS4_ENG"
-    elif get_pixel(1432, 1010) == (204, 114, 238) and get_pixel(1628, 1013) == (56, 161, 229):
+    elif pixel(1432, 1010) == (204, 114, 238) and pixel(1628, 1013) == (56, 161, 229):
         ui = "DS4_RUS"
-    elif get_pixel(1444, 1006) == (50, 175, 255) and get_pixel(1624, 1008) == (56, 161, 229):
+    elif pixel(1444, 1006) == (50, 175, 255) and pixel(1624, 1008) == (56, 161, 229):
         ui = "XBOX_ENG"
-    elif get_pixel(1444, 1006) == (50, 175, 255) and get_pixel(1624, 1008) == (56, 161, 229):
+    elif pixel(1444, 1006) == (50, 175, 255) and pixel(1624, 1008) == (56, 161, 229):
         ui = "XBOX_RUS"
 
     return ui
-
-
-def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
-    """
-    Return the RGB value of a pixel.
-    :param x: The x coordinate of the pixel.
-    :param y: The y coordinate of the pixel.
-    :return: The RGB value of the pixel.
-    """
-
-    return pyautogui.pixel(x, y)
 
 
 def random_interval() -> float:
@@ -116,12 +105,12 @@ def is_dialogue() -> bool:
     Check if dialogue icon is present or not
     :return: Boolean True if dialogue icon is present, otherwise False
     """
-    if get_pixel(DS4_DIALOGUE_ICON_X, DS4_DIALOGUE_ICON_Y) == (255, 255, 255) \
-            and get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
+    if pixel(DS4_DIALOGUE_ICON_X, DS4_DIALOGUE_ICON_Y) == (255, 255, 255) \
+            and pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
         return True
 
-    if get_pixel(XBOX_DIALOGUE_ICON_X, XBOX_DIALOGUE_ICON_Y) == (255, 255, 255) \
-            and get_pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
+    if pixel(XBOX_DIALOGUE_ICON_X, XBOX_DIALOGUE_ICON_Y) == (255, 255, 255) \
+            and pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) != (255, 255, 255):
         return True
 
     return False
@@ -231,7 +220,7 @@ def main() -> None:
                 select_last_dialogue_option(xbox_gamepad)
             press_cross(xbox_gamepad)
 
-            pyautogui.click()
+            click()
 
 if __name__ == "__main__":
     mouse = Controller()
