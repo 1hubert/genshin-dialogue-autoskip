@@ -8,25 +8,25 @@ from pyautogui import pixel, click
 from pynput.mouse import Controller
 from pynput.keyboard import Key, KeyCode, Listener
 
-# Pixel coordinates for pink pixel of the autoplay button (DualShock 4 Square and Xbox "X"). eng
+# Pixel coordinates for pink pixel of the autoplay button (DualShock 4 Square and Xbox 'X'). eng
 DS4_ENG_AUTOPLAY_ICON_X: int = 1450
 DS4_ENG_AUTOPLAY_ICON_Y: int = 1010
 XBOX_ENG_AUTOPLAY_ICON_X: int = 1450
 XBOX_ENG_AUTOPLAY_ICON_Y: int = 1004
 
-# Pixel coordinates for blue pixel of the confirm button (DualShock 4 cross and Xbox "B"). eng
+# Pixel coordinates for blue pixel of the confirm button (DualShock 4 cross and Xbox 'B'). eng
 DS4_ENG_CONFIRM_ICON_X: int = 1683
 DS4_ENG_CONFIRM_ICON_Y: int = 1013
 XBOX_ENG_CONFIRM_ICON_X: int = 1626
 XBOX_ENG_CONFIRM_ICON_Y: int = 1004
 
-# Pixel coordinates for pink pixel of the autoplay button (DualShock 4 square and Xbox "X"). rus
+# Pixel coordinates for pink pixel of the autoplay button (DualShock 4 square and Xbox 'X'). rus
 DS4_RUS_AUTOPLAY_ICON_X: int = 1432
 DS4_RUS_AUTOPLAY_ICON_Y: int = 1010
 XBOX_RUS_AUTOPLAY_ICON_X: int = 1450
 XBOX_RUS_AUTOPLAY_ICON_Y: int = 1004
 
-# Pixel coordinates for blue pixel of the confirm button (DualShock 4 cross and Xbox "B"). rus
+# Pixel coordinates for blue pixel of the confirm button (DualShock 4 cross and Xbox 'B'). rus
 DS4_RUS_CONFIRM_ICON_X: int = 1628
 DS4_RUS_CONFIRM_ICON_Y: int = 1013
 XBOX_RUS_CONFIRM_ICON_X: int = 1624
@@ -48,16 +48,16 @@ def define_ui() -> str:
     mouse UI. Works for 1920x1080 game resolution.
     :return: String value that defines UI
     """
-    ui = ""
+    ui = ''
 
     if pixel(1450, 1010) == (204, 114, 238) and pixel(1683, 1013) == (56, 161, 229):
-        ui = "DS4_ENG"
+        ui = 'DS4_ENG'
     elif pixel(1432, 1010) == (204, 114, 238) and pixel(1628, 1013) == (56, 161, 229):
-        ui = "DS4_RUS"
+        ui = 'DS4_RUS'
     elif pixel(1444, 1006) == (50, 175, 255) and pixel(1624, 1008) == (56, 161, 229):
-        ui = "XBOX_ENG"
+        ui = 'XBOX_ENG'
     elif pixel(1444, 1006) == (50, 175, 255) and pixel(1624, 1008) == (56, 161, 229):
-        ui = "XBOX_RUS"
+        ui = 'XBOX_RUS'
 
     return ui
 
@@ -134,7 +134,7 @@ def select_last_dialogue_option(gamepad: Union[vg.VDS4Gamepad, vg.VX360Gamepad])
         method_name = 'press_button'
         dpad_direction = None
     else:
-        print("Unsupported gamepad, skipping...")
+        print('Unsupported gamepad, skipping...')
         return
 
     method = getattr(gamepad, method_name)
@@ -164,7 +164,7 @@ def press_cross(gamepad: Union[vg.VDS4Gamepad, vg.VX360Gamepad]) -> None:
     elif isinstance(gamepad, vg.VX360Gamepad):
         button = xbox_buttons.XUSB_GAMEPAD_B
     else:
-        print("Unsupported gamepad, skipping...")
+        print('Unsupported gamepad, skipping...')
         return
 
     gamepad.report.wButtons |= button.value
@@ -200,29 +200,29 @@ def main() -> None:
             print('Main program closing')
             break
 
-        if define_ui() == "DS4_ENG" or is_dialogue():
+        if define_ui() == 'DS4_ENG' or is_dialogue():
             if is_dialogue():
                 select_last_dialogue_option(ds4_gamepad)
             press_cross(ds4_gamepad)
 
-        if define_ui() == "DS4_RUS" or is_dialogue():
+        if define_ui() == 'DS4_RUS' or is_dialogue():
             if is_dialogue():
                 select_last_dialogue_option(ds4_gamepad)
             press_cross(ds4_gamepad)
 
-        if define_ui() == "XBOX_ENG" or is_dialogue():
+        if define_ui() == 'XBOX_ENG' or is_dialogue():
             if is_dialogue():
                 select_last_dialogue_option(xbox_gamepad)
             press_cross(xbox_gamepad)
 
-        if define_ui() == "XBOX_RUS" or is_dialogue():
+        if define_ui() == 'XBOX_RUS' or is_dialogue():
             if is_dialogue():
                 select_last_dialogue_option(xbox_gamepad)
             press_cross(xbox_gamepad)
 
             click()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     mouse = Controller()
     Thread(target=main).start()
     Thread(target=exit_program).start()
