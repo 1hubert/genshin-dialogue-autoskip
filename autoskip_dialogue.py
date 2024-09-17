@@ -15,6 +15,9 @@ os.system('cls')
 load_dotenv()
 print('Welcome to Genshin Impact Dialogue Skipper\n')
 
+SCREEN_WIDTH = None
+SCREEN_HEIGHT = None
+
 # Check if either screen dimension is missing from .env
 if os.environ['WIDTH'] == '' or os.environ['HEIGHT'] == '':
     # Detect and set screen dimensions
@@ -42,30 +45,99 @@ else:
     SCREEN_WIDTH = int(os.getenv('WIDTH'))
     SCREEN_HEIGHT = int(os.getenv('HEIGHT'))
 
+
 def width_adjust(x: int) -> int:
     """Adjust variables to the width of the screen."""
     return int(x/1920 * SCREEN_WIDTH)
+
 
 def height_adjust(y: int) -> int:
     """Adjust variables to the height of the screen."""
     return int(y/1080 * SCREEN_HEIGHT)
 
+
+def get_position_right(hdpos_x: int, doublehdpos_x: int, SCREEN_WIDTH: int, extra: float):
+    """
+    Use this if the pixel is bound to the right side.
+    Calculates the distance of the pixel from the right side of the screen. Returns position of pixel on x.
+    hdpos_x
+    position of the pixel on 1920*1080 display.
+    doublehdpos_x
+    position of the pixel on 3840*1080 display.
+    SCREEN_WIDTH
+    width of the screen we want to get the position for.
+    extra
+    we need an extra multiplier for screens above 3840*1920
+    :return: position
+    """
+
+    if SCREEN_WIDTH <= 3840:  # above 3840 we need an extra multiplier
+        extra = 0
+    diff = doublehdpos_x - hdpos_x
+    change_per_pixel = diff/1920
+    screen_diff = SCREEN_WIDTH - 1920
+    extra_pixels = screen_diff * (change_per_pixel+extra)
+    position = int(hdpos_x + extra_pixels)
+
+    return position
+
+
+def get_position_left(hdpos_x: int, doublehdpos_x: int, SCREEN_WIDTH: int) -> int:
+    """
+    Use this if the pixel is bound to the left side.
+    Calculates the distance of the pixel from the left side of the screen. Returns position of pixel on x
+    hdpos_x
+    position of the pixel on 1920*1080 display.
+    doublehdpos_x
+    position of the pixel on 3840*1080 display.
+    SCREEN_WIDTH
+    width of the screen we want to get the position for.
+    :return: position
+    """
+
+    diff = doublehdpos_x - hdpos_x
+    change_per_pixel = diff/1920
+    screen_diff = SCREEN_WIDTH - 1920
+    extra_pixels = screen_diff * change_per_pixel
+    position = int(hdpos_x + extra_pixels)
+
+    return position
+
+
 # Dimensions of bottom dialogue option
-BOTTOM_DIALOGUE_MIN_X = width_adjust(1300)
-BOTTOM_DIALOGUE_MAX_X = width_adjust(1700)
+if SCREEN_WIDTH > 1920 and SCREEN_HEIGHT >= 1080:
+    BOTTOM_DIALOGUE_MIN_X = get_position_right(1300, 2734, SCREEN_WIDTH, 0.031)
+    BOTTOM_DIALOGUE_MAX_X = get_position_right(1700, 3303, SCREEN_WIDTH, -0.015)
+else:
+    BOTTOM_DIALOGUE_MIN_X = width_adjust(1300)
+    BOTTOM_DIALOGUE_MAX_X = width_adjust(1700)
 BOTTOM_DIALOGUE_MIN_Y = height_adjust(790)
 BOTTOM_DIALOGUE_MAX_Y = height_adjust(800)
 
 # Pixel coordinates for white part of the autoplay button
-PLAYING_ICON_X = width_adjust(84)
-PLAYING_ICON_Y = height_adjust(46)
+if SCREEN_WIDTH > 1920 and SCREEN_HEIGHT >= 1080:
+    # I will leave the flexible position here, but I found out that it won't be greater than 230. So it might have to
+    # be removed if someone can test with a 1440p screen
+    PLAYING_ICON_X = get_position_left(84, 230, SCREEN_WIDTH)  # 230 at 3840
+    if PLAYING_ICON_X > 231:
+        PLAYING_ICON_X = 230
+    PLAYING_ICON_Y = height_adjust(46)
+else:
+    PLAYING_ICON_X = width_adjust(84)
+    PLAYING_ICON_Y = height_adjust(46)
 
 # Pixel coordinates for white part of the speech bubble in bottom dialogue option
-DIALOGUE_ICON_X = width_adjust(1301)
-DIALOGUE_ICON_LOWER_Y = height_adjust(808)
-DIALOGUE_ICON_HIGHER_Y = height_adjust(790)
+if SCREEN_WIDTH > 1920 and SCREEN_HEIGHT == 1080:
+    DIALOGUE_ICON_X = get_position_right(1301, 2770, SCREEN_WIDTH, 0.02)
+    DIALOGUE_ICON_LOWER_Y = height_adjust(810)
+    DIALOGUE_ICON_HIGHER_Y = height_adjust(792)
+else:
+    DIALOGUE_ICON_X = width_adjust(1301)
+    DIALOGUE_ICON_LOWER_Y = height_adjust(808)
+    DIALOGUE_ICON_HIGHER_Y = height_adjust(790)
 
 # Pixel coordinates near middle of the screen known to be white while the game is loading
+# This should work fine on most screen sizes I think - @withoutface
 LOADING_SCREEN_X = width_adjust(1200)
 LOADING_SCREEN_Y = height_adjust(700)
 
