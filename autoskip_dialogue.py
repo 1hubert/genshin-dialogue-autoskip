@@ -56,7 +56,7 @@ def height_adjust(y: int) -> int:
     return int(y/1080 * SCREEN_HEIGHT)
 
 
-def get_position_right(hdpos_x: int, doublehdpos_x: int, SCREEN_WIDTH: int, extra: float):
+def get_position_right(hdpos_x: int, doublehdpos_x: int, SCREEN_WIDTH: int, extra: float) -> int:
     """
     Use this if the pixel is bound to the right side.
     Calculates the distance of the pixel from the right side of the screen. Returns position of pixel on x.
@@ -116,8 +116,8 @@ BOTTOM_DIALOGUE_MAX_Y = height_adjust(800)
 
 # Pixel coordinates for white part of the autoplay button
 if SCREEN_WIDTH > 1920 and SCREEN_HEIGHT >= 1080:
-    # I will leave the flexible position here, but I found out that it won't be greater than 230. So it might have to
-    # be removed if someone can test with a 1440p screen
+    # I will leave the flexible position here, but I found out that it won't be greater than 230.
+    # So it might have to be removed if someone can test with a 1440p screen.
     PLAYING_ICON_X = get_position_left(84, 230, SCREEN_WIDTH)  # 230 at 3840
     if PLAYING_ICON_X > 231:
         PLAYING_ICON_X = 230
@@ -127,7 +127,7 @@ else:
     PLAYING_ICON_Y = height_adjust(46)
 
 # Pixel coordinates for white part of the speech bubble in bottom dialogue option
-if SCREEN_WIDTH > 1920 and SCREEN_HEIGHT == 1080:
+if SCREEN_WIDTH > 1920 and SCREEN_HEIGHT >= 1080:
     DIALOGUE_ICON_X = get_position_right(1301, 2770, SCREEN_WIDTH, 0.02)
     DIALOGUE_ICON_LOWER_Y = height_adjust(810)
     DIALOGUE_ICON_HIGHER_Y = height_adjust(792)
