@@ -107,7 +107,7 @@ def get_position_left(hdpos_x: int, doublehdpos_x: int, SCREEN_WIDTH: int) -> in
 
 
 # Dimensions of bottom dialogue option
-if SCREEN_WIDTH > 1920 and SCREEN_HEIGHT >= 1080:
+if SCREEN_WIDTH > 1920 and float(int(SCREEN_HEIGHT)/int(SCREEN_WIDTH)) != float(0.5625):
     BOTTOM_DIALOGUE_MIN_X = get_position_right(1300, 2734, SCREEN_WIDTH, 0.031)
     BOTTOM_DIALOGUE_MAX_X = get_position_right(1700, 3303, SCREEN_WIDTH, -0.015)
 else:
@@ -117,7 +117,7 @@ BOTTOM_DIALOGUE_MIN_Y = height_adjust(790)
 BOTTOM_DIALOGUE_MAX_Y = height_adjust(800)
 
 # Pixel coordinates for white part of the autoplay button
-if SCREEN_WIDTH > 1920 and SCREEN_HEIGHT >= 1080:
+if SCREEN_WIDTH > 1920 and float(int(SCREEN_HEIGHT)/int(SCREEN_WIDTH)) != float(0.5625):
     # I will leave the flexible position here, but I found out that it won't be greater than 230.
     # So it might have to be removed if someone can test with a 1440p screen.
     PLAYING_ICON_X = get_position_left(84, 230, SCREEN_WIDTH)  # 230 at 3840
@@ -129,7 +129,7 @@ else:
     PLAYING_ICON_Y = height_adjust(46)
 
 # Pixel coordinates for white part of the speech bubble in bottom dialogue option
-if SCREEN_WIDTH > 1920 and SCREEN_HEIGHT >= 1080:
+if SCREEN_WIDTH > 1920 and float(int(SCREEN_HEIGHT)/int(SCREEN_WIDTH)) != float(0.5625):
     DIALOGUE_ICON_X = get_position_right(1301, 2770, SCREEN_WIDTH, 0.02)
     DIALOGUE_ICON_LOWER_Y = height_adjust(810)
     DIALOGUE_ICON_HIGHER_Y = height_adjust(792)
