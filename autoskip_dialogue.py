@@ -18,6 +18,8 @@ print('Welcome to Genshin Impact Dialogue Skipper\n')
 SCREEN_WIDTH = None
 SCREEN_HEIGHT = None
 
+# Whole script can be simplified because in the new genshin update the F key can be used to select dialogue options.
+
 # Check if either screen dimension is missing from .env
 if os.environ['WIDTH'] == '' or os.environ['HEIGHT'] == '':
     # Detect and set screen dimensions
