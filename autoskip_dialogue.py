@@ -7,7 +7,7 @@ import os
 import vgamepad as vg
 from win32api import GetSystemMetrics
 from dotenv import load_dotenv, find_dotenv, set_key
-from pyautogui import pixel, click
+from pyautogui import pixel
 from pynput.mouse import Controller
 from pynput.keyboard import Key, KeyCode, Listener
 
@@ -263,7 +263,6 @@ def main() -> None:
                 select_last_dialogue_option(xbox_gamepad)
             press_cross(xbox_gamepad)
 
-            click()
 
 if __name__ == '__main__':
     mouse = Controller()
