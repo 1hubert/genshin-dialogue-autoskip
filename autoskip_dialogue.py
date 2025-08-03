@@ -12,7 +12,7 @@ from dotenv import find_dotenv, load_dotenv, set_key
 # Initial setup
 os.system("cls")
 load_dotenv()
-print("Welcome to Genshin Impact Dialogue Skipper (Simplified F-Key Version)\n")
+print("Welcome to Genshin Impact Dialogue Skipper\n")
 
 SCREEN_WIDTH = None
 SCREEN_HEIGHT = None
