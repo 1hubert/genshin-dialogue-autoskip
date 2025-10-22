@@ -3,19 +3,20 @@ from random import randint, uniform
 from threading import Thread
 from time import perf_counter, sleep
 from typing import Union
-from win32api import GetSystemMetrics
+from win32api import GetSystemMetrics  # type: ignore[import-untyped]
 
-from pyautogui import getActiveWindowTitle, press, pixel
-from pynput.keyboard import Key, KeyCode, Listener
-from dotenv import find_dotenv, load_dotenv, set_key
+from pyautogui import getActiveWindowTitle, press, pixel  # type: ignore[import-untyped]
+from pynput.keyboard import Key, KeyCode, Listener  # type: ignore[import-untyped]
+from dotenv import find_dotenv, load_dotenv, set_key  # type: ignore[import-not-found]
 
 # Initial setup
 os.system("cls")
 load_dotenv()
-print("Welcome to Genshin Impact Dialogue Skipper\n")
-
-SCREEN_WIDTH = None
-SCREEN_HEIGHT = None
+print("\n" + "=" * 60)
+print("  GENSHIN IMPACT - DIALOGUE AUTO-SKIPPER")
+print("=" * 60)
+print("  Version 1.0 | Keyboard & Mouse Edition")
+print("=" * 60 + "\n")
 
 # Check if either screen dimension is missing from .env
 if os.environ.get("WIDTH", "") == "" or os.environ.get("HEIGHT", "") == "":
@@ -23,23 +24,7 @@ if os.environ.get("WIDTH", "") == "" or os.environ.get("HEIGHT", "") == "":
     SCREEN_WIDTH = GetSystemMetrics(0)
     SCREEN_HEIGHT = GetSystemMetrics(1)
 
-    # In case the resolution is not correct, ask for the correct resolution
-    print(f"Detected Resolution: {SCREEN_WIDTH}x{SCREEN_HEIGHT}")
-    print("Is the resolution correct? (y/n)")
-    response = input()
-
-    if response.lower().startswith("n"):
-        print("Enter resolution width: ", end="")
-        SCREEN_WIDTH = int(input())
-        print("Enter resolution height: ", end="")
-        SCREEN_HEIGHT = int(input())
-        print(
-            "\nNew resolution set to "
-            + str(SCREEN_WIDTH)
-            + "x"
-            + str(SCREEN_HEIGHT)
-            + "\n"
-        )
+    print(f"  Resolution: {SCREEN_WIDTH}x{SCREEN_HEIGHT}\n")
 
     # Write changes to .env file
     dotenv_file = find_dotenv()
@@ -53,8 +38,12 @@ if os.environ.get("WIDTH", "") == "" or os.environ.get("HEIGHT", "") == "":
             f.write(f"HEIGHT={SCREEN_HEIGHT}\n")
 else:
     # Read screen dimensions from .env
-    SCREEN_WIDTH = int(os.getenv("WIDTH"))
-    SCREEN_HEIGHT = int(os.getenv("HEIGHT"))
+    width_str = os.getenv("WIDTH")
+    height_str = os.getenv("HEIGHT")
+    if width_str is None or height_str is None:
+        raise ValueError("WIDTH or HEIGHT environment variable is None")
+    SCREEN_WIDTH = int(width_str)
+    SCREEN_HEIGHT = int(height_str)
 
 
 def width_adjust(x: int) -> int:
@@ -151,8 +140,18 @@ def take_random_break() -> float:
     :return: Duration of the break in seconds
     """
     break_duration = uniform(3.0, 8.0)
-    print(f"Taking a {break_duration:.1f} second break...")
+    print(f"  Taking a {break_duration:.1f}s break...")
     return break_duration
+
+
+class MainStatus:
+    """Class to hold the status of the main loop."""
+
+    def __init__(self) -> None:
+        self.status: str = "pause"
+
+
+main_status = MainStatus()
 
 
 def on_press(key: Union[Key, KeyCode, None]) -> None:
@@ -164,13 +163,22 @@ def on_press(key: Union[Key, KeyCode, None]) -> None:
     key_pressed = str(key)
 
     if key_pressed == "Key.f8":
-        main.status = "run"
-        print("RUNNING - Auto F-key pressing enabled")
+        main_status.status = "run"
+        print("\n" + "=" * 50)
+        print("  STATUS: RUNNING")
+        print("  Auto-skip is now ACTIVE")
+        print("=" * 50 + "\n")
     elif key_pressed == "Key.f9":
-        main.status = "pause"
-        print("PAUSED - Auto F-key pressing disabled")
+        main_status.status = "pause"
+        print("\n" + "=" * 50)
+        print("  STATUS: PAUSED")
+        print("  Auto-skip is now INACTIVE")
+        print("=" * 50 + "\n")
     elif key_pressed == "Key.f12":
-        main.status = "exit"
+        main_status.status = "exit"
+        print("\n" + "=" * 50)
+        print("  Shutting down... Goodbye!")
+        print("=" * 50 + "\n")
         exit()
 
 
@@ -184,29 +192,37 @@ def main() -> None:
 
     def is_genshin_impact_active() -> bool:
         """Check if Genshin Impact is the active window."""
-        return getActiveWindowTitle() == "Genshin Impact"
+        title = getActiveWindowTitle()
+        return bool(title == "Genshin Impact")
 
     def is_dialogue_playing() -> bool:
         """Check if dialogue is currently playing (autoplay button visible)."""
-        return pixel(PLAYING_ICON_X, PLAYING_ICON_Y) == (236, 229, 216)
+        try:
+            current_pixel = pixel(PLAYING_ICON_X, PLAYING_ICON_Y)
+            return bool(current_pixel == (236, 229, 216))
+        except Exception:
+            return False
 
     def is_dialogue_option_available() -> bool:
         """Check if dialogue options are available."""
-        # Confirm loading screen is not white
-        if pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) == (255, 255, 255):
+        try:
+            # Confirm loading screen is not white
+            if pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) == (255, 255, 255):
+                return False
+
+            # Check if lower dialogue icon pixel is white
+            if pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_LOWER_Y) == (255, 255, 255):
+                return True
+
+            # Check if higher dialogue icon pixel is white
+            if pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_HIGHER_Y) == (255, 255, 255):
+                return True
+
+            return False
+        except Exception:
             return False
 
-        # Check if lower dialogue icon pixel is white
-        if pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_LOWER_Y) == (255, 255, 255):
-            return True
-
-        # Check if higher dialogue icon pixel is white
-        if pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_HIGHER_Y) == (255, 255, 255):
-            return True
-
-        return False
-
-    main.status = "pause"
+    main_status.status = "pause"
     last_f_press = 0.0
     next_f_interval = random_f_key_interval()
 
@@ -214,24 +230,27 @@ def main() -> None:
     last_break_check = perf_counter()
     break_check_interval = 30.0  # Check for breaks every 30 seconds
 
-    print("-------------")
-    print("F8 to start")
-    print("F9 to pause")
-    print("F12 to quit")
-    print("-------------")
+    print("\n" + "=" * 60)
+    print("  READY TO START")
+    print("=" * 60)
+    print("  Controls:")
+    print("    [F8]  - Start Auto-Skip")
+    print("    [F9]  - Pause Auto-Skip")
+    print("    [F12] - Exit Program")
+    print("=" * 60)
+    print("\n  Waiting for input...\n")
 
     while True:
         current_time = perf_counter()
 
         # Handle pause state
-        while main.status == "pause":
+        while main_status.status == "pause":
             sleep(0.5)
             current_time = perf_counter()  # Update time after pause
             last_f_press = current_time  # Reset timing after pause
 
         # Handle exit
-        if main.status == "exit":
-            print("Simplified autoskip closing")
+        if main_status.status == "exit":
             break
 
         # Only proceed if Genshin Impact is active
@@ -262,7 +281,7 @@ def main() -> None:
             try:
                 press("f")
             except Exception as e:
-                print(f"Error pressing F key: {e}")
+                print(f"\n  Error pressing F key: {e}")
 
             # Set up next F press timing
             last_f_press = current_time

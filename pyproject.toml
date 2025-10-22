@@ -1,19 +1,13 @@
-[tool.poetry]
-name = "genshin-dialogue-autoskip"
+[project]
+name = "genshin-dialogue-autoskip-main"
 version = "0.1.0"
-description = ""
-authors = ""
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.12"
-pyautogui = "0.9.54"
-pynput = "1.7.6"
-python-dotenv = "1.0.0"
-pyscreeze = "0.1.28"
-pypiwin32 = "223"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.11"
+dependencies = [
+    "pyautogui==0.9.54",
+    "pynput==1.7.6",
+    "pypiwin32==223",
+    "pyscreeze==0.1.28",
+    "python-dotenv==1.0.0",
+    "types-pywin32>=306.0.0.20240822",
+    "types-PyAutoGUI>=0.9.3.7",
+]
