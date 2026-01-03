@@ -54,14 +54,18 @@ def height_adjust(y: int) -> int:
 # Pixel coordinates for pink pixel of the autoplay button (DualShock 4 Square and Xbox 'X'). eng
 DS4_ENG_AUTOPLAY_ICON_X: int = width_adjust(1450)
 DS4_ENG_AUTOPLAY_ICON_Y: int = height_adjust(1010)
-XBOX_ENG_AUTOPLAY_ICON_X: int = width_adjust(1444)
-XBOX_ENG_AUTOPLAY_ICON_Y: int = height_adjust(1006)
+XBOX_ENG_AUTOPLAY_ICON_X: int = width_adjust(1542)
+XBOX_ENG_AUTOPLAY_ICON_Y: int = height_adjust(1007)
 
 # Pixel coordinates for blue pixel of the confirm button (DualShock 4 cross and Xbox 'B'). eng
 DS4_ENG_CONFIRM_ICON_X: int = width_adjust(1683)
 DS4_ENG_CONFIRM_ICON_Y: int = height_adjust(1013)
-XBOX_ENG_CONFIRM_ICON_X: int = width_adjust(1624)
-XBOX_ENG_CONFIRM_ICON_Y: int = height_adjust(1008)
+# Confirm = B
+XBOX_ENG_CONFIRM_B_ICON_X: int = width_adjust(1694)
+XBOX_ENG_CONFIRM_B_ICON_Y: int = height_adjust(1008)
+# Confirm = A
+XBOX_ENG_CONFIRM_A_ICON_X: int = width_adjust(1700)
+XBOX_ENG_CONFIRM_A_ICON_Y: int = height_adjust(1008)
 
 # Pixel coordinates for pink pixel of the autoplay button (DualShock 4 square and Xbox 'X'). rus
 DS4_RUS_AUTOPLAY_ICON_X: int = width_adjust(1432)
@@ -72,8 +76,8 @@ XBOX_RUS_AUTOPLAY_ICON_Y: int = height_adjust(1006)
 # Pixel coordinates for blue pixel of the confirm button (DualShock 4 cross and Xbox 'B'). rus
 DS4_RUS_CONFIRM_ICON_X: int = width_adjust(1628)
 DS4_RUS_CONFIRM_ICON_Y: int = height_adjust(1013)
-XBOX_RUS_CONFIRM_ICON_X: int = width_adjust(1624)
-XBOX_RUS_CONFIRM_ICON_Y: int = height_adjust(1005)
+XBOX_RUS_CONFIRM_B_ICON_X: int = width_adjust(1624)
+XBOX_RUS_CONFIRM_B_ICON_Y: int = height_adjust(1005)
 
 # Pixel coordinates for white part of the speech bubble in bottom dialogue option. (DualShock 4 and Xbox)
 DS4_DIALOGUE_ICON_X: int = width_adjust(1300)
@@ -84,6 +88,10 @@ XBOX_DIALOGUE_ICON_Y: int = height_adjust(770)
 # Pixel coordinates near middle of the screen known to be white while the game is loading.
 LOADING_SCREEN_X: int = width_adjust(1200)
 LOADING_SCREEN_Y: int = height_adjust(700)
+
+# Pixel coordinates of the yellow rombus that appears in a conversation.
+YELLOW_ROMBUS_X: int = width_adjust(958)
+YELLOW_ROMBUS_Y: int = height_adjust(998)
 
 def define_ui() -> str:
     """
@@ -97,9 +105,11 @@ def define_ui() -> str:
         ui = 'DS4_ENG'
     elif pixel(DS4_RUS_AUTOPLAY_ICON_X, DS4_RUS_AUTOPLAY_ICON_Y) == (204, 114, 238) and pixel(DS4_RUS_CONFIRM_ICON_X, DS4_RUS_CONFIRM_ICON_Y) == (56, 161, 229):
         ui = 'DS4_RUS'
-    elif pixel(XBOX_ENG_AUTOPLAY_ICON_X, XBOX_ENG_AUTOPLAY_ICON_Y) == (50, 175, 255) and pixel(XBOX_ENG_CONFIRM_ICON_X, XBOX_ENG_CONFIRM_ICON_Y) == (56, 161, 229):
+    elif pixel(XBOX_ENG_AUTOPLAY_ICON_X, XBOX_ENG_AUTOPLAY_ICON_Y) == (50, 175, 255) and pixel(XBOX_ENG_CONFIRM_B_ICON_X, XBOX_ENG_CONFIRM_B_ICON_Y) == (255, 92, 92):
         ui = 'XBOX_ENG'
-    elif pixel(XBOX_RUS_AUTOPLAY_ICON_X, XBOX_RUS_AUTOPLAY_ICON_Y) == (50, 175, 255) and pixel(XBOX_RUS_CONFIRM_ICON_X, XBOX_ENG_CONFIRM_ICON_Y) == (56, 161, 229):
+    elif pixel(XBOX_ENG_AUTOPLAY_ICON_X, XBOX_ENG_AUTOPLAY_ICON_Y) == (50, 175, 255) and pixel(XBOX_ENG_CONFIRM_A_ICON_X, XBOX_ENG_CONFIRM_A_ICON_Y) == (153, 205, 51):
+        ui = 'XBOX_ENG'
+    elif pixel(XBOX_RUS_AUTOPLAY_ICON_X, XBOX_RUS_AUTOPLAY_ICON_Y) == (50, 175, 255) and pixel(XBOX_RUS_CONFIRM_B_ICON_X, XBOX_ENG_CONFIRM_B_ICON_Y) == (56, 161, 229):
         ui = 'XBOX_RUS'
 
     return ui
@@ -142,7 +152,6 @@ def exit_program() -> None:
     with Listener(on_press=on_press) as listener:
         listener.join()
 
-
 def is_dialogue() -> bool:
     """
     Check if dialogue icon is present or not
@@ -173,7 +182,10 @@ def select_last_dialogue_option(gamepad: Union[vg.VDS4Gamepad, vg.VX360Gamepad])
         method_name = 'press_button'
         dpad_direction = vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTH
     elif isinstance(gamepad, vg.VX360Gamepad):
-        button = xbox_buttons.XUSB_GAMEPAD_B
+        if os.environ['CONFIRM_BUTTON'] == "A":
+            button = xbox_buttons.XUSB_GAMEPAD_A
+        else:
+            button = xbox_buttons.XUSB_GAMEPAD_B
         method_name = 'press_button'
         dpad_direction = None
     else:
@@ -205,7 +217,10 @@ def press_cross(gamepad: Union[vg.VDS4Gamepad, vg.VX360Gamepad]) -> None:
     if isinstance(gamepad, vg.VDS4Gamepad):
         button = ds4_buttons.DS4_BUTTON_CROSS
     elif isinstance(gamepad, vg.VX360Gamepad):
-        button = xbox_buttons.XUSB_GAMEPAD_B
+        if os.environ['CONFIRM_BUTTON'] == "A":
+            button = xbox_buttons.XUSB_GAMEPAD_A
+        else:
+            button = xbox_buttons.XUSB_GAMEPAD_B
     else:
         print('Unsupported gamepad, skipping...')
         return
@@ -262,7 +277,6 @@ def main() -> None:
             if is_dialogue():
                 select_last_dialogue_option(xbox_gamepad)
             press_cross(xbox_gamepad)
-
 
 if __name__ == '__main__':
     mouse = Controller()
