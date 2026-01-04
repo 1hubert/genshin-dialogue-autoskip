@@ -34,6 +34,7 @@ if os.environ['WIDTH'] == '' or os.environ['HEIGHT'] == '':
         SCREEN_HEIGHT = int(input())
         print('\nNew resolution set to ' + str(SCREEN_WIDTH) + 'x' + str(SCREEN_HEIGHT) + '\n')
 
+
     # Write changes to .env file
     dotenv_file = find_dotenv()
     set_key(dotenv_file, "WIDTH", str(SCREEN_WIDTH), quote_mode="never")
@@ -42,6 +43,21 @@ else:
     # Read screen dimensions from .env
     SCREEN_WIDTH = int(os.getenv('WIDTH'))
     SCREEN_HEIGHT = int(os.getenv('HEIGHT'))
+
+
+if os.environ['CONFIRM_BUTTON'] == '':
+    # confirm button
+    print(f'Are you using A or B as the confirm button? (a/b)')
+    response2 = input().upper()
+    if response2 in ["A", "B"]:
+        confirm_button = response2
+    else:
+        print("incorrect selection. proceeding with default button: A")
+
+    dotenv_file = find_dotenv()
+    set_key(dotenv_file, "CONFIRM_BUTTON", str(response2), quote_mode="never")
+else:
+    confirm_button = os.environ['CONFIRM_BUTTON']
 
 def width_adjust(x: int) -> int:
     """Adjust variables to the width of the screen."""
@@ -182,7 +198,7 @@ def select_last_dialogue_option(gamepad: Union[vg.VDS4Gamepad, vg.VX360Gamepad])
         method_name = 'press_button'
         dpad_direction = vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTH
     elif isinstance(gamepad, vg.VX360Gamepad):
-        if os.environ['CONFIRM_BUTTON'] == "A":
+        if confirm_button == "A":
             button = xbox_buttons.XUSB_GAMEPAD_A
         else:
             button = xbox_buttons.XUSB_GAMEPAD_B
@@ -217,7 +233,7 @@ def press_cross(gamepad: Union[vg.VDS4Gamepad, vg.VX360Gamepad]) -> None:
     if isinstance(gamepad, vg.VDS4Gamepad):
         button = ds4_buttons.DS4_BUTTON_CROSS
     elif isinstance(gamepad, vg.VX360Gamepad):
-        if os.environ['CONFIRM_BUTTON'] == "A":
+        if confirm_button == "A":
             button = xbox_buttons.XUSB_GAMEPAD_A
         else:
             button = xbox_buttons.XUSB_GAMEPAD_B

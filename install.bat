@@ -3,25 +3,6 @@ pushd "%~dp0"
 
 
 :: ============================================
-:: Admin Privileges Check
-:: ============================================
-echo Checking admin privileges...
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-    color 0C
-    echo.
-    echo [ERROR] This script requires Administrator privileges!
-    echo.
-    echo Please right-click run.bat and select "Run as administrator"
-    echo.
-    goto end
-)
-color 0A
-echo [OK] Running with Administrator privileges
-echo.
-
-
-:: ============================================
 :: Python Installation Check
 :: ============================================
 color 0E
@@ -46,11 +27,38 @@ echo.
 
 
 :: ============================================
-:: Starting script
+:: Creating venv and installing dependencies
 :: ============================================
 
-venv\Scripts\python.exe autoskip_dialogue.py
+python -m venv venv
+venv\Scripts\python.exe -m pip install --no-cache-dir -r requirements.txt
 
+
+
+
+:: ============================================
+:: Install ViGEmBus
+:: ============================================
+
+setlocal EnableExtensions
+
+set "URL=https://github.com/nefarius/ViGEmBus/releases/download/v1.22.0/ViGEmBus_1.22.0_x64_x86_arm64.exe"
+set "FILE=ViGEmBus_1.22.0_x64_x86_arm64.exe"
+set "TARGET_VER=1.22.0"
+
+
+echo.
+echo Downloading ViGEmBus installer to: "%CD%\%FILE%"
+curl -L -o "%FILE%" "%URL%"
+
+
+echo.
+echo Launching installer (interactive)...
+"%CD%\%FILE%"
+
+echo.
+echo Installer launched. If it was already installed, it should offer repair/update as needed.
+endlocal
 
 :end
 @pause
