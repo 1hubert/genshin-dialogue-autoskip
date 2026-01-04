@@ -321,7 +321,8 @@ def main() -> None:
           'F8 to start\n'
           'F9 to stop\n'
           'F12 to quit\n'
-          '-------------')
+          '-------------\n'
+          'enable autoplay with X. otherwise the script wont work.')
 
     while True:
         while main.status == 'pause':
