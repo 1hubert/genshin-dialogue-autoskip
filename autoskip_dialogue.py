@@ -52,6 +52,7 @@ if os.environ['CONFIRM_BUTTON'] == '':
     if response2 in ["A", "B"]:
         confirm_button = response2
     else:
+        confirm_button = "A"
         print("incorrect selection. proceeding with default button: A")
 
     dotenv_file = find_dotenv()
