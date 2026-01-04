@@ -67,23 +67,93 @@ def height_adjust(y: int) -> int:
     """Adjust variables to the height of the screen."""
     return int(y/1080 * SCREEN_HEIGHT)
 
-# Pixel coordinates for pink pixel of the autoplay button (DualShock 4 Square and Xbox 'X'). eng
-DS4_ENG_AUTOPLAY_ICON_X: int = width_adjust(1450)
-DS4_ENG_AUTOPLAY_ICON_Y: int = height_adjust(1010)
-XBOX_ENG_AUTOPLAY_ICON_X: int = width_adjust(1542)
-XBOX_ENG_AUTOPLAY_ICON_Y: int = height_adjust(1007)
+def get_position_right(
+    hdpos_x: int, doublehdpos_x: int, SCREEN_WIDTH: int, extra: float
+) -> int:
+    """
+    Use this if the pixel is bound to the right side.
+    Calculates the distance of the pixel from the right side of the screen. Returns position of pixel on x.
+    """
+    if SCREEN_WIDTH <= 3840:  # above 3840 we need an extra multiplier
+        extra = 0
+    diff = doublehdpos_x - hdpos_x
+    change_per_pixel = diff / 1920
+    screen_diff = SCREEN_WIDTH - 1920
+    extra_pixels = screen_diff * (change_per_pixel + extra)
+    position = int(hdpos_x + extra_pixels)
+    return position
+
+
+def get_position_left(hdpos_x: int, doublehdpos_x: int, SCREEN_WIDTH: int) -> int:
+    """
+    Use this if the pixel is bound to the left side.
+    Calculates the distance of the pixel from the left side of the screen. Returns position of pixel on x
+    """
+    diff = doublehdpos_x - hdpos_x
+    change_per_pixel = diff / 1920
+    screen_diff = SCREEN_WIDTH - 1920
+    extra_pixels = screen_diff * change_per_pixel
+    position = int(hdpos_x + extra_pixels)
+    return position
+
+# Pixel coordinates for pink/blue pixel of the autoplay button (DualShock 4 Square and Xbox 'X'). eng
+if SCREEN_WIDTH > 1920 and float(int(SCREEN_HEIGHT) / int(SCREEN_WIDTH)) != float(
+    0.5625
+):
+    DS4_ENG_AUTOPLAY_ICON_X: int = get_position_right(1450, 3255, SCREEN_WIDTH, 0)
+    DS4_ENG_AUTOPLAY_ICON_Y: int = height_adjust(1010)
+
+    XBOX_ENG_AUTOPLAY_ICON_X: int = get_position_right(1542, 3462, SCREEN_WIDTH, 0)
+    XBOX_ENG_AUTOPLAY_ICON_Y: int = height_adjust(1007)
+else:
+    DS4_ENG_AUTOPLAY_ICON_X: int = width_adjust(1450)
+    DS4_ENG_AUTOPLAY_ICON_Y: int = height_adjust(1010)
+    XBOX_ENG_AUTOPLAY_ICON_X: int = width_adjust(1542)
+    XBOX_ENG_AUTOPLAY_ICON_Y: int = height_adjust(1007)
 
 # Pixel coordinates for blue pixel of the confirm button (DualShock 4 cross and Xbox 'B'). eng
-DS4_ENG_CONFIRM_ICON_X: int = width_adjust(1683)
-DS4_ENG_CONFIRM_ICON_Y: int = height_adjust(1013)
-# Confirm = B
-XBOX_ENG_CONFIRM_B_ICON_X: int = width_adjust(1694)
-XBOX_ENG_CONFIRM_B_ICON_Y: int = height_adjust(1008)
-# Confirm = A
-XBOX_ENG_CONFIRM_A_ICON_X: int = width_adjust(1700)
-XBOX_ENG_CONFIRM_A_ICON_Y: int = height_adjust(1008)
+if SCREEN_WIDTH > 1920 and float(int(SCREEN_HEIGHT) / int(SCREEN_WIDTH)) != float(
+    0.5625
+):
+    XBOX_ENG_CONFIRM_B_ICON_X: int = get_position_right(1694, 3607, SCREEN_WIDTH, 0)
+    XBOX_ENG_CONFIRM_B_ICON_Y: int = height_adjust(1010)
 
-# Pixel coordinates for pink pixel of the autoplay button (DualShock 4 square and Xbox 'X'). rus
+    XBOX_ENG_CONFIRM_A_ICON_X: int = get_position_right(1700, 3620, SCREEN_WIDTH, 0)
+    XBOX_ENG_CONFIRM_A_ICON_Y: int = height_adjust(1007)
+else:
+    DS4_ENG_CONFIRM_ICON_X: int = width_adjust(1683)
+    DS4_ENG_CONFIRM_ICON_Y: int = height_adjust(1013)
+    # Confirm = B
+    XBOX_ENG_CONFIRM_B_ICON_X: int = width_adjust(1694)
+    XBOX_ENG_CONFIRM_B_ICON_Y: int = height_adjust(1008)
+    # Confirm = A
+    XBOX_ENG_CONFIRM_A_ICON_X: int = width_adjust(1700)
+    XBOX_ENG_CONFIRM_A_ICON_Y: int = height_adjust(1008)
+
+
+# Pixel coordinates for white part of the speech bubble in bottom dialogue option. (DualShock 4 and Xbox)
+if SCREEN_WIDTH > 1920 and float(int(SCREEN_HEIGHT) / int(SCREEN_WIDTH)) != float(
+    0.5625
+):
+    DS4_DIALOGUE_ICON_X: int = get_position_right(1300, 2856, SCREEN_WIDTH, 0)
+    DS4_DIALOGUE_ICON_Y: int = height_adjust(770)
+
+    XBOX_DIALOGUE_ICON_X: int = get_position_right(1300, 2856, SCREEN_WIDTH, 0)
+    XBOX_DIALOGUE_ICON_Y: int = height_adjust(770)
+else:
+    DS4_DIALOGUE_ICON_X: int = width_adjust(1300)
+    DS4_DIALOGUE_ICON_Y: int = height_adjust(770)
+    XBOX_DIALOGUE_ICON_X: int = width_adjust(1300)
+    XBOX_DIALOGUE_ICON_Y: int = height_adjust(770)
+
+# Pixel coordinates near middle of the screen known to be white while the game is loading.
+LOADING_SCREEN_X: int = width_adjust(1200)
+LOADING_SCREEN_Y: int = height_adjust(700)
+
+
+# RUSSIAN
+
+# Pixel coordinates for pink/blue pixel of the autoplay button (DualShock 4 square and Xbox 'X'). rus
 DS4_RUS_AUTOPLAY_ICON_X: int = width_adjust(1432)
 DS4_RUS_AUTOPLAY_ICON_Y: int = height_adjust(1010)
 XBOX_RUS_AUTOPLAY_ICON_X: int = width_adjust(1444)
@@ -94,20 +164,6 @@ DS4_RUS_CONFIRM_ICON_X: int = width_adjust(1628)
 DS4_RUS_CONFIRM_ICON_Y: int = height_adjust(1013)
 XBOX_RUS_CONFIRM_B_ICON_X: int = width_adjust(1624)
 XBOX_RUS_CONFIRM_B_ICON_Y: int = height_adjust(1005)
-
-# Pixel coordinates for white part of the speech bubble in bottom dialogue option. (DualShock 4 and Xbox)
-DS4_DIALOGUE_ICON_X: int = width_adjust(1300)
-DS4_DIALOGUE_ICON_Y: int = height_adjust(770)
-XBOX_DIALOGUE_ICON_X: int = width_adjust(1300)
-XBOX_DIALOGUE_ICON_Y: int = height_adjust(770)
-
-# Pixel coordinates near middle of the screen known to be white while the game is loading.
-LOADING_SCREEN_X: int = width_adjust(1200)
-LOADING_SCREEN_Y: int = height_adjust(700)
-
-# Pixel coordinates of the yellow rombus that appears in a conversation.
-YELLOW_ROMBUS_X: int = width_adjust(958)
-YELLOW_ROMBUS_Y: int = height_adjust(998)
 
 def define_ui() -> str:
     """
