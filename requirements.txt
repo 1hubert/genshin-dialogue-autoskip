@@ -1,6 +1,7 @@
 PyAutoGUI==0.9.54
 pynput==1.7.6
-vgamepad==0.0.8
+vgamepad==0.1.0
 python-dotenv==1.0.0
 pyscreeze==0.1.28
 pypiwin32==223
+
