@@ -139,16 +139,16 @@ if os.environ.get("WIDTH", "") == "" or os.environ.get("HEIGHT", "") == "" or os
 
     print(f"  Resolution: {SCREEN_WIDTH}x{SCREEN_HEIGHT}\n")
 
-    while True:
-        temp_conf_device = str(input("Select device!\n1: Mouse and keyboard\n2: gamepad (xbox, dualshock) UNDER DEVELOPMENT\nEnter the number of your chosen device type: "))
-        if temp_conf_device == "1":
-            DEVICE = "mnk"
-            break
-        elif temp_conf_device == "2":
-            DEVICE = "gamepad"
-            break
-        else:
-            print("Incorrect format. Make sure it's only 1 character.")
+    #while True:
+    #    temp_conf_device = str(input("Select device!\n1: Mouse and keyboard\n2: gamepad (xbox, dualshock) UNDER DEVELOPMENT\nEnter the number of your chosen device type: "))
+    #    if temp_conf_device == "1":
+    #        DEVICE = "mnk"
+    #        break
+    #    elif temp_conf_device == "2":
+    #        DEVICE = "gamepad"
+    #        break
+    #    else:
+    #        print("Incorrect format. Make sure it's only 1 character.")
 
     while True:
         temp_conf_btn = str(input("Enter your in game interaction key (f.e: F):"))
