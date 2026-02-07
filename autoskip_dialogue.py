@@ -18,32 +18,39 @@ print("=" * 60)
 print("  Version 1.0 | Keyboard & Mouse Edition")
 print("=" * 60 + "\n")
 
-# Check if either screen dimension is missing from .env
-if os.environ.get("WIDTH", "") == "" or os.environ.get("HEIGHT", "") == "":
-    # Detect and set screen dimensions
-    SCREEN_WIDTH = GetSystemMetrics(0)
-    SCREEN_HEIGHT = GetSystemMetrics(1)
 
-    print(f"  Resolution: {SCREEN_WIDTH}x{SCREEN_HEIGHT}\n")
+COORDS = {
+    "gamepad": {
+        "default": {}
+    },
+    "mnk": {
+        "default": {
+            "PLAYING_ICON_X": ("width_adjust", 84),
+            "PLAYING_ICON_Y": ("height_adjust", 46),
 
-    # Write changes to .env file
-    dotenv_file = find_dotenv()
-    if dotenv_file:
-        set_key(dotenv_file, "WIDTH", str(SCREEN_WIDTH), quote_mode="never")
-        set_key(dotenv_file, "HEIGHT", str(SCREEN_HEIGHT), quote_mode="never")
-    else:
-        # Create .env file if it doesn't exist
-        with open(".env", "w") as f:
-            f.write(f"WIDTH={SCREEN_WIDTH}\n")
-            f.write(f"HEIGHT={SCREEN_HEIGHT}\n")
-else:
-    # Read screen dimensions from .env
-    width_str = os.getenv("WIDTH")
-    height_str = os.getenv("HEIGHT")
-    if width_str is None or height_str is None:
-        raise ValueError("WIDTH or HEIGHT environment variable is None")
-    SCREEN_WIDTH = int(width_str)
-    SCREEN_HEIGHT = int(height_str)
+            "DIALOGUE_ICON_X": ("width_adjust", 1301),
+            "DIALOGUE_ICON_LOWER_Y": ("height_adjust", 808),
+            "DIALOGUE_ICON_HIGHER_Y": ("height_adjust", 790),
+
+            "LOADING_SCREEN_X": ("width_adjust", 1200),
+            "LOADING_SCREEN_Y": ("height_adjust", 700)
+        },
+        "wide_screen": {
+            "PLAYING_ICON_X": ("get_position_left", 84, 230),
+
+            "DIALOGUE_ICON_X": ("get_position_right", 1301, 2770, 0.02),
+            "DIALOGUE_ICON_LOWER_Y": ("height_adjust", 810),
+            "DIALOGUE_ICON_HIGHER_Y": ("height_adjust", 792)
+        },
+        (2880, 1800): {
+            "PLAYING_ICON_X": ("static", 126),
+
+            "DIALOGUE_ICON_X": ("static", 1947),
+            "DIALOGUE_ICON_LOWER_Y": ("static", 1370),
+            "DIALOGUE_ICON_HIGHER_Y": ("static", 1260)
+        }
+    }
+}
 
 
 def width_adjust(x: int) -> int:
@@ -86,33 +93,100 @@ def get_position_left(hdpos_x: int, doublehdpos_x: int, SCREEN_WIDTH: int) -> in
     return position
 
 
-# Pixel coordinates for white part of the autoplay button
-if SCREEN_WIDTH > 1920 and float(int(SCREEN_HEIGHT) / int(SCREEN_WIDTH)) != float(
-    0.5625
-):
-    PLAYING_ICON_X = get_position_left(84, 230, SCREEN_WIDTH)  # 230 at 3840
-    if PLAYING_ICON_X > 231:
-        PLAYING_ICON_X = 230
-    PLAYING_ICON_Y = height_adjust(46)
-else:
-    PLAYING_ICON_X = width_adjust(84)
-    PLAYING_ICON_Y = height_adjust(46)
+# Check if screen is 16:9 ratio
+def is_screen_default_ratio() -> bool:
+    if SCREEN_WIDTH > 1920 and float(int(SCREEN_HEIGHT) / int(SCREEN_WIDTH)) != float(0.5625):
+        return False
+    else:
+        return True
 
-# Pixel coordinates for white part of the speech bubble in bottom dialogue option
-if SCREEN_WIDTH > 1920 and float(int(SCREEN_HEIGHT) / int(SCREEN_WIDTH)) != float(
-    0.5625
-):
-    DIALOGUE_ICON_X = get_position_right(1301, 2770, SCREEN_WIDTH, 0.02)
-    DIALOGUE_ICON_LOWER_Y = height_adjust(810)
-    DIALOGUE_ICON_HIGHER_Y = height_adjust(792)
-else:
-    DIALOGUE_ICON_X = width_adjust(1301)
-    DIALOGUE_ICON_LOWER_Y = height_adjust(808)
-    DIALOGUE_ICON_HIGHER_Y = height_adjust(790)
 
-# Pixel coordinates near middle of the screen known to be white while the game is loading
-LOADING_SCREEN_X = width_adjust(1200)
-LOADING_SCREEN_Y = height_adjust(700)
+def get_pixel(device: str, res: tuple[int,int], name: str):
+    base = COORDS[device]["default"]
+    override: dict = {}
+    if res in COORDS[device]:
+        override = COORDS[device].get(res, {})
+    elif not is_screen_default_ratio():
+        override = COORDS[device].get("wide_screen", {})
+
+    merged = {**base, **override}
+
+    if merged[name][0] == "width_adjust":
+        return width_adjust(merged[name][1])
+    if merged[name][0] == "height_adjust":
+        return height_adjust(merged[name][1])
+    if merged[name][0] == "get_position_left":
+        x = get_position_left(merged[name][1], merged[name][2], res[0])
+        if x > 231:
+            x = 230
+        return x
+    if merged[name][0] == "get_position_right":
+        return get_position_right(merged[name][1], merged[name][2], res[0], merged[name][3])
+    if merged[name][0] == "static":
+        return merged[name][1]
+
+    raise ValueError(f"Unknown coord handler: {merged[name][0]} for {device}.{name}")
+
+
+
+# Check if either screen dimension is missing from .env
+if os.environ.get("WIDTH", "") == "" or os.environ.get("HEIGHT", "") == "" or os.environ.get("CONFIRM_BUTTON", "") == "" or os.environ.get("DEVICE", "") == "":
+    # Detect and set screen dimensions
+    SCREEN_WIDTH = GetSystemMetrics(0)
+    SCREEN_HEIGHT = GetSystemMetrics(1)
+    CONFIRM_BUTTON = "f" # F by default
+    DEVICE = "mnk" # mouse n keyboard by default
+
+    print(f"  Resolution: {SCREEN_WIDTH}x{SCREEN_HEIGHT}\n")
+
+    #while True:
+    #    temp_conf_device = str(input("Select device!\n1: Mouse and keyboard\n2: gamepad (xbox, dualshock) UNDER DEVELOPMENT\nEnter the number of your chosen device type: "))
+    #    if temp_conf_device == "1":
+    #        DEVICE = "mnk"
+    #        break
+    #    elif temp_conf_device == "2":
+    #        DEVICE = "gamepad"
+    #        break
+    #    else:
+    #        print("Incorrect format. Make sure it's only 1 character.")
+
+    while True:
+        temp_conf_btn = str(input("Enter your in game interaction key (f.e: F):"))
+        if len(temp_conf_btn) == 1:
+            CONFIRM_BUTTON = str(temp_conf_btn.lower())
+            break
+        else:
+            print("Incorrect format. Make sure it's only 1 character.")
+
+    # Write changes to .env file
+    dotenv_file = find_dotenv()
+    if dotenv_file:
+        set_key(dotenv_file, "WIDTH", str(SCREEN_WIDTH), quote_mode="never")
+        set_key(dotenv_file, "HEIGHT", str(SCREEN_HEIGHT), quote_mode="never")
+        set_key(dotenv_file, "CONFIRM_BUTTON", str(CONFIRM_BUTTON), quote_mode="never")
+        set_key(dotenv_file, "DEVICE", str(DEVICE), quote_mode="never")
+    else:
+        # Create .env file if it doesn't exist
+        with open(".env", "w") as f:
+            f.write(f"WIDTH={SCREEN_WIDTH}\n")
+            f.write(f"HEIGHT={SCREEN_HEIGHT}\n")
+            f.write(f"CONFIRM_BUTTON={CONFIRM_BUTTON}\n")
+            f.write(f"DEVICE={DEVICE}\n")
+else:
+    # Read screen dimensions from .env
+    width_str = os.getenv("WIDTH")
+    height_str = os.getenv("HEIGHT")
+    if width_str is None or height_str is None:
+        raise ValueError("WIDTH or HEIGHT environment variable is None")
+    SCREEN_WIDTH = int(width_str)
+    SCREEN_HEIGHT = int(height_str)
+
+    CONFIRM_BUTTON = os.getenv("CONFIRM_BUTTON")
+    DEVICE = os.getenv("DEVICE")
+
+    print(f"Current resolution: {SCREEN_WIDTH}x{SCREEN_HEIGHT}\nChosen device: {DEVICE}\nCurrent interaction key: {CONFIRM_BUTTON}")
+
+res = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 
 def random_f_key_interval() -> float:
@@ -195,32 +269,32 @@ def main() -> None:
         title = getActiveWindowTitle()
         return bool(title == "Genshin Impact")
 
-    def is_dialogue_playing() -> bool:
+    def is_dialogue_playing() -> tuple[bool, bool]:
         """Check if dialogue is currently playing (autoplay button visible)."""
         try:
-            current_pixel = pixel(PLAYING_ICON_X, PLAYING_ICON_Y)
-            return bool(current_pixel == (236, 229, 216))
+            current_pixel = pixel(get_pixel(DEVICE, res, "PLAYING_ICON_X"), get_pixel(DEVICE, res, "PLAYING_ICON_Y"))
+            return bool(current_pixel == (236, 229, 216)), False
         except Exception:
-            return False
+            return False, False
 
-    def is_dialogue_option_available() -> bool:
+    def is_dialogue_option_available() -> tuple[bool, bool]:
         """Check if dialogue options are available."""
         try:
             # Confirm loading screen is not white
-            if pixel(LOADING_SCREEN_X, LOADING_SCREEN_Y) == (255, 255, 255):
-                return False
+            if pixel(get_pixel(DEVICE, res, "LOADING_SCREEN_X"), get_pixel(DEVICE, res, "LOADING_SCREEN_Y")) == (255, 255, 255):
+                return False, False
 
             # Check if lower dialogue icon pixel is white
-            if pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_LOWER_Y) == (255, 255, 255):
-                return True
+            if pixel(get_pixel(DEVICE, res, "DIALOGUE_ICON_X"), get_pixel(DEVICE, res, "DIALOGUE_ICON_LOWER_Y")) == (255, 255, 255):
+                return True, True
 
             # Check if higher dialogue icon pixel is white
-            if pixel(DIALOGUE_ICON_X, DIALOGUE_ICON_HIGHER_Y) == (255, 255, 255):
-                return True
+            if pixel(get_pixel(DEVICE, res, "DIALOGUE_ICON_X"), get_pixel(DEVICE, res, "DIALOGUE_ICON_HIGHER_Y")) == (255, 255, 255):
+                return True, True
 
-            return False
+            return False, False
         except Exception:
-            return False
+            return False, False
 
     main_status.status = "pause"
     last_f_press = 0.0
@@ -259,7 +333,8 @@ def main() -> None:
             continue
 
         # Check if dialogue is active (either playing or options available)
-        dialogue_active = is_dialogue_playing() or is_dialogue_option_available()
+        dialogue_active = is_dialogue_playing()[0] or is_dialogue_option_available()[0]
+        options_available = is_dialogue_option_available()[1]
 
         if not dialogue_active:
             sleep(0.1)
@@ -279,9 +354,12 @@ def main() -> None:
         # Check if it's time to press F
         if current_time - last_f_press >= next_f_interval:
             try:
-                press("f")
+                if not options_available:
+                    press("f")
+                else:
+                    press(CONFIRM_BUTTON)
             except Exception as e:
-                print(f"\n  Error pressing F key: {e}")
+                print(f"\n  Error pressing {CONFIRM_BUTTON} key: {e}")
 
             # Set up next F press timing
             last_f_press = current_time
