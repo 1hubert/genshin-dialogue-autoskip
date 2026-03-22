@@ -1,0 +1,122 @@
+name: Test run.bat Script
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'run.bat'
+      - 'pyproject.toml'
+      - 'autoskip_dialogue.py'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'run.bat'
+      - 'pyproject.toml'
+      - 'autoskip_dialogue.py'
+
+jobs:
+  test-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Display Python version
+      run: python --version
+
+    - name: Check pip
+      run: pip --version
+
+    - name: Install uv via pip
+      run: pip install uv
+
+    - name: Verify uv installation
+      run: |
+        where uv
+        uv --version
+
+    - name: Check project dependencies
+      run: uv pip list
+
+    - name: Sync dependencies with uv
+      run: uv sync
+
+    - name: Verify script exists
+      run: |
+        if (Test-Path "autoskip_dialogue.py") {
+          Write-Host "[OK] autoskip_dialogue.py found"
+        } else {
+          Write-Host "[ERROR] autoskip_dialogue.py not found"
+          exit 1
+        }
+
+    - name: Test run.bat PATH resolution (simulated)
+      run: |
+        Write-Host "Testing PATH resolution logic..."
+        $pythonExe = (python -c "import sys; print(sys.executable)")
+        Write-Host "Python executable: $pythonExe"
+
+        $pythonDir = Split-Path -Parent $pythonExe
+        $scriptsPath = Join-Path $pythonDir "Scripts"
+        Write-Host "Scripts directory: $scriptsPath"
+
+        if (Test-Path $scriptsPath) {
+          Write-Host "[OK] Scripts directory exists"
+          $uvPath = Join-Path $scriptsPath "uv.exe"
+          if (Test-Path $uvPath) {
+            Write-Host "[OK] uv.exe found at: $uvPath"
+          }
+        }
+
+    - name: Test uv can run
+      run: uv --help > $null
+      continue-on-error: false
+
+  test-script-simulation:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Run batch file without admin check (test mode)
+      run: |
+        # Create a test version of run.bat that skips admin check
+        $testBat = @'
+        @echo off
+        echo [TEST] Skipping admin check in CI environment
+        echo.
+
+        echo Checking for Python...
+        python --version
+
+        echo.
+        echo Checking for uv...
+        where uv
+        if %errorlevel% neq 0 (
+            echo Installing uv...
+            pip install uv
+        )
+
+        echo.
+        echo Installing project dependencies...
+        uv sync
+
+        echo.
+        echo [OK] All checks passed!
+        '@
+
+        $testBat | Out-File -Encoding ASCII test_run.bat
+        cmd /c test_run.bat

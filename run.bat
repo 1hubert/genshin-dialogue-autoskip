@@ -71,6 +71,8 @@ if %errorlevel% equ 0 (
         color 0A
         echo [OK] uv installed successfully!
         echo.
+        :: Try to add Python Scripts to PATH
+        call :add_to_path
         goto run_script
     ) else (
         color 0C
@@ -90,6 +92,8 @@ if %errorlevel% equ 0 (
         color 0A
         echo [OK] uv installed successfully!
         echo.
+        :: Try to add Python Scripts to PATH
+        call :add_to_path
         goto run_script
     ) else (
         color 0C
@@ -126,6 +130,25 @@ echo ============================================
 echo.
 color 0F
 
+:: Final verification before running
+where uv >nul 2>nul
+if %errorlevel% neq 0 (
+    color 0C
+    echo.
+    echo [ERROR] uv command not found at runtime!
+    echo This could mean:
+    echo   - The PATH needs to be refreshed (restart cmd/terminal)
+    echo   - uv installation failed
+    echo   - uv is installed but not in PATH
+    echo.
+    echo Try one of these:
+    echo   1. Close and reopen Command Prompt as Administrator
+    echo   2. Manually run: pip install uv
+    echo   3. Check if uv is in: %%APPDATA%%\Python\Scripts
+    echo.
+    goto end
+)
+
 uv run autoskip_dialogue.py
 set SCRIPT_EXIT_CODE=%errorlevel%
 
@@ -157,6 +180,36 @@ if /i "%RETRY%"=="YES" goto run_script
 echo.
 echo Exiting...
 goto end
+
+:add_to_path
+setlocal enabledelayedexpansion
+:: Get Python Scripts directory
+for /f "tokens=*" %%i in ('python -c "import site; print(site.USER_SITE)" 2^>nul') do set PYTHON_USER=%%i
+if defined PYTHON_USER (
+    set SCRIPTS_PATH=!PYTHON_USER!\Scripts
+) else (
+    :: Fallback: try to get from Python executable location
+    for /f "tokens=*" %%i in ('python -c "import sys; print(sys.executable)" 2^>nul') do set PYTHON_EXE=%%i
+    if defined PYTHON_EXE (
+        for %%x in (!PYTHON_EXE!) do set PYTHON_DIR=%%~dpx
+        set SCRIPTS_PATH=!PYTHON_DIR!Scripts
+    )
+)
+
+if defined SCRIPTS_PATH (
+    echo Attempting to add Python Scripts to session PATH: !SCRIPTS_PATH!
+    set PATH=!SCRIPTS_PATH!;!PATH!
+
+    :: Verify uv is now accessible
+    where uv >nul 2>nul
+    if %errorlevel% equ 0 (
+        color 0A
+        echo [OK] uv is now accessible in PATH
+        echo.
+    )
+)
+endlocal & set PATH=%PATH%
+goto :eof
 
 :end
 color 0F
