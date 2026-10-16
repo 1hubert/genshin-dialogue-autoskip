@@ -53,7 +53,7 @@ where uv >nul 2>nul
 if %errorlevel% equ 0 (
     for /f "tokens=*" %%i in ('uv --version 2^>^&1') do set UV_VERSION=%%i
     color 0A
-    echo [OK] Found %UV_VERSION%
+    call echo [OK] Found %%UV_VERSION%%
     echo.
     goto run_script
 )
@@ -137,7 +137,7 @@ if %errorlevel% neq 0 (
     echo.
     echo [ERROR] uv command not found at runtime!
     echo This could mean:
-    echo   - The PATH needs to be refreshed (restart cmd/terminal)
+    echo   - The PATH needs to be refreshed ^(restart cmd/terminal^)
     echo   - uv installation failed
     echo   - uv is installed but not in PATH
     echo.
